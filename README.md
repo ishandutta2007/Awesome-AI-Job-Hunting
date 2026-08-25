@@ -1,14 +1,14 @@
 <p align="center">
-  <img src="assets/mascot/ai_job_mascot.jpg" alt="AI-Job-Hunting Mascot - Dynamic Cyber Courier" width="280">
+  <img src="assets/banner.svg" alt="Awesome AI-Job-Hunting Banner" width="100%">
+</p>
+
+<p align="center">
+  <img src="assets/mascot/ai_job_mascot.jpg" alt="AI-Job-Hunting Mascot - Dynamic Cyber Courier" width="240">
 </p>
 
 # 🚀 Awesome AI-Job-Hunting 🎯
 
 *The Privacy-First, Open-Source Autonomous AI-Job-Hunting & Career Automation Engine.*
-
-<p align="center">
-  <a href="https://trendshift.io/repositories/43622?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-43622" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/43622/daily" alt="MadsLorentzen%2Fai-job-search | Trendshift" width="250" height="55"/></a>
-</p>
 
 <p align="center">
   <a href="https://github.com/MadsLorentzen/ai-job-search/actions/workflows/ci.yml"><img src="https://github.com/MadsLorentzen/ai-job-search/actions/workflows/ci.yml/badge.svg" alt="CI Status"></a>

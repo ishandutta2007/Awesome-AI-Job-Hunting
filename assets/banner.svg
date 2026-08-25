@@ -1,0 +1,260 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 380" width="100%" height="100%" style="background: transparent;">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090d16" />
+      <stop offset="50%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#080c14" />
+    </linearGradient>
+
+    <!-- Animated Shimmer Gradient -->
+    <linearGradient id="titleShimmer" x1="0%" y1="0%" x2="200%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8">
+        <animate attributeName="stop-color" values="#38bdf8;#818cf8;#c084fc;#38bdf8" dur="6s" repeatCount="indefinite" />
+      </stop>
+      <stop offset="50%" stop-color="#ec4899">
+        <animate attributeName="stop-color" values="#ec4899;#38bdf8;#818cf8;#ec4899" dur="6s" repeatCount="indefinite" />
+      </stop>
+      <stop offset="100%" stop-color="#818cf8">
+        <animate attributeName="stop-color" values="#818cf8;#c084fc;#38bdf8;#818cf8" dur="6s" repeatCount="indefinite" />
+      </stop>
+    </linearGradient>
+
+    <!-- Glowing Border Gradient -->
+    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.8">
+        <animate attributeName="stop-opacity" values="0.8;0.3;0.8" dur="4s" repeatCount="indefinite" />
+      </stop>
+      <stop offset="50%" stop-color="#818cf8" stop-opacity="0.4">
+        <animate attributeName="stop-opacity" values="0.4;0.9;0.4" dur="4s" repeatCount="indefinite" />
+      </stop>
+      <stop offset="100%" stop-color="#c084fc" stop-opacity="0.8">
+        <animate attributeName="stop-opacity" values="0.8;0.3;0.8" dur="4s" repeatCount="indefinite" />
+      </stop>
+    </linearGradient>
+
+    <!-- Badge Glow Filters -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <filter id="glow-subtle" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <!-- Grid Pattern -->
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.75" stroke-opacity="0.6" />
+    </pattern>
+
+    <!-- Floating Orb Animation Styles -->
+    <style>
+      @keyframes floatSlow {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-12px) rotate(3deg); }
+      }
+      @keyframes pulseGlow {
+        0%, 100% { opacity: 0.3; transform: scale(1); }
+        50% { opacity: 0.7; transform: scale(1.15); }
+      }
+      @keyframes radarSweep {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      @keyframes dashMove {
+        to { stroke-dashoffset: -100; }
+      }
+      @keyframes beamMove {
+        0% { transform: translateX(-200px); opacity: 0; }
+        20% { opacity: 1; }
+        80% { opacity: 1; }
+        100% { transform: translateX(1200px); opacity: 0; }
+      }
+      .floating {
+        animation: floatSlow 6s ease-in-out infinite;
+      }
+      .pulsing-orb-1 {
+        animation: pulseGlow 5s ease-in-out infinite;
+        transform-origin: 200px 100px;
+      }
+      .pulsing-orb-2 {
+        animation: pulseGlow 7s ease-in-out infinite;
+        transform-origin: 1000px 280px;
+      }
+      .grid-lines {
+        stroke-dasharray: 6, 6;
+        animation: dashMove 15s linear infinite;
+      }
+      .light-beam {
+        animation: beamMove 8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      }
+      .badge-hover {
+        transition: transform 0.3s ease;
+      }
+      .badge-hover:hover {
+        transform: translateY(-3px);
+      }
+    </style>
+  </defs>
+
+  <!-- Card Background -->
+  <rect x="10" y="10" width="1180" height="360" rx="24" fill="url(#bgGrad)" />
+  <rect x="10" y="10" width="1180" height="360" rx="24" fill="url(#grid)" />
+
+  <!-- Ambient Glowing Orbs -->
+  <circle class="pulsing-orb-1" cx="220" cy="90" r="140" fill="#38bdf8" opacity="0.15" filter="url(#glow)" />
+  <circle class="pulsing-orb-2" cx="980" cy="270" r="160" fill="#a855f7" opacity="0.12" filter="url(#glow)" />
+  <circle cx="600" cy="180" r="220" fill="#6366f1" opacity="0.08" filter="url(#glow)" />
+
+  <!-- Dynamic Particle Network / Constellation -->
+  <g opacity="0.45">
+    <!-- Connecting lines -->
+    <line x1="120" y1="80" x2="250" y2="130" stroke="#38bdf8" stroke-width="1.5" class="grid-lines" />
+    <line x1="250" y1="130" x2="180" y2="240" stroke="#818cf8" stroke-width="1.5" />
+    <line x1="180" y1="240" x2="310" y2="290" stroke="#38bdf8" stroke-width="1" />
+    
+    <line x1="1080" y1="90" x2="960" y2="140" stroke="#c084fc" stroke-width="1.5" class="grid-lines" />
+    <line x1="960" y1="140" x2="1020" y2="250" stroke="#818cf8" stroke-width="1.5" />
+    <line x1="1020" y1="250" x2="890" y2="300" stroke="#ec4899" stroke-width="1" />
+
+    <!-- Pulsing Nodes -->
+    <circle cx="120" cy="80" r="4" fill="#38bdf8">
+      <animate attributeName="r" values="3;6;3" dur="3s" repeatCount="indefinite" />
+    </circle>
+    <circle cx="250" cy="130" r="5" fill="#818cf8">
+      <animate attributeName="r" values="4;7;4" dur="3.5s" repeatCount="indefinite" />
+    </circle>
+    <circle cx="180" cy="240" r="4" fill="#38bdf8" />
+    <circle cx="310" cy="290" r="3.5" fill="#a855f7" />
+
+    <circle cx="1080" cy="90" r="4" fill="#c084fc">
+      <animate attributeName="r" values="3;6;3" dur="4s" repeatCount="indefinite" />
+    </circle>
+    <circle cx="960" cy="140" r="5" fill="#818cf8">
+      <animate attributeName="r" values="4;7;4" dur="2.8s" repeatCount="indefinite" />
+    </circle>
+    <circle cx="1020" cy="250" r="4.5" fill="#ec4899" />
+    <circle cx="890" cy="300" r="3.5" fill="#38bdf8" />
+  </g>
+
+  <!-- Dynamic Scanning Beam Effect -->
+  <g class="light-beam" opacity="0.6">
+    <line x1="0" y1="10" x2="180" y2="370" stroke="url(#titleShimmer)" stroke-width="2" stroke-linecap="round" filter="url(#glow-subtle)" />
+  </g>
+
+  <!-- Outer Card Glowing Border -->
+  <rect x="10" y="10" width="1180" height="360" rx="24" fill="none" stroke="url(#borderGrad)" stroke-width="2" />
+
+  <!-- Radar / Targeting Reticle (Left Graphic) -->
+  <g transform="translate(135, 185)" opacity="0.85" class="floating">
+    <!-- Concentric radar circles -->
+    <circle cx="0" cy="0" r="65" fill="none" stroke="#1e293b" stroke-width="1.5" />
+    <circle cx="0" cy="0" r="48" fill="none" stroke="#334155" stroke-width="1.5" stroke-dasharray="4 4" />
+    <circle cx="0" cy="0" r="30" fill="none" stroke="#38bdf8" stroke-opacity="0.4" stroke-width="1.5">
+      <animate attributeName="r" values="20;55;20" dur="4s" repeatCount="indefinite" />
+      <animate attributeName="stroke-opacity" values="0.8;0;0.8" dur="4s" repeatCount="indefinite" />
+    </circle>
+    
+    <!-- Crosshairs -->
+    <line x1="-75" y1="0" x2="75" y2="0" stroke="#38bdf8" stroke-opacity="0.3" stroke-width="1.5" />
+    <line x1="0" y1="-75" x2="0" y2="75" stroke="#38bdf8" stroke-opacity="0.3" stroke-width="1.5" />
+
+    <!-- Center target core -->
+    <circle cx="0" cy="0" r="14" fill="#0f172a" stroke="#38bdf8" stroke-width="2" />
+    <circle cx="0" cy="0" r="6" fill="#38bdf8">
+      <animate attributeName="fill" values="#38bdf8;#818cf8;#38bdf8" dur="2s" repeatCount="indefinite" />
+    </circle>
+    
+    <!-- Rotating satellite scanner -->
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="6s" repeatCount="indefinite" />
+      <line x1="0" y1="0" x2="48" y2="0" stroke="#38bdf8" stroke-width="2" stroke-opacity="0.7" />
+      <circle cx="48" cy="0" r="3.5" fill="#38bdf8" filter="url(#glow-subtle)" />
+    </g>
+  </g>
+
+  <!-- Main Content Center Stack -->
+  <g text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif">
+    
+    <!-- Top Pill Tag -->
+    <g transform="translate(600, 68)" class="badge-hover">
+      <rect x="-175" y="-16" width="350" height="32" rx="16" fill="#1e293b" fill-opacity="0.8" stroke="#38bdf8" stroke-width="1.2" stroke-opacity="0.6" />
+      <circle cx="-148" cy="0" r="4" fill="#10b981">
+        <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite" />
+      </circle>
+      <text x="-135" y="5" font-size="13" font-weight="700" fill="#38bdf8" letter-spacing="1.5" text-anchor="start">AUTONOMOUS MULTI-AGENT ENGINE</text>
+    </g>
+
+    <!-- Main Title -->
+    <text x="600" y="145" font-size="44" font-weight="900" fill="url(#titleShimmer)" letter-spacing="-0.5" filter="url(#glow-subtle)">
+      AWESOME AI-JOB-HUNTING
+    </text>
+
+    <!-- Subtitle / Mission statement -->
+    <text x="600" y="185" font-size="18" font-weight="500" fill="#94a3b8" letter-spacing="0.2">
+      The Privacy-First, Autonomous Job Search &amp; Career Engineering Copilot
+    </text>
+
+    <!-- Interactive Badges Row -->
+    <g transform="translate(600, 245)">
+      <!-- Badge 1: 100% Local Privacy -->
+      <g transform="translate(-320, 0)" class="badge-hover">
+        <rect x="-95" y="-18" width="190" height="36" rx="10" fill="#0f172a" stroke="#10b981" stroke-width="1.4" stroke-opacity="0.8" />
+        <text x="0" y="5" font-size="13" font-weight="600" fill="#34d399">🛡️ 100% Local Privacy</text>
+      </g>
+
+      <!-- Badge 2: Multi-Portal Scraper -->
+      <g transform="translate(-105, 0)" class="badge-hover">
+        <rect x="-105" y="-18" width="210" height="36" rx="10" fill="#0f172a" stroke="#38bdf8" stroke-width="1.4" stroke-opacity="0.8" />
+        <text x="0" y="5" font-size="13" font-weight="600" fill="#7dd3fc">⚡ Multi-Portal Scraper</text>
+      </g>
+
+      <!-- Badge 3: LaTeX Engine -->
+      <g transform="translate(110, 0)" class="badge-hover">
+        <rect x="-95" y="-18" width="190" height="36" rx="10" fill="#0f172a" stroke="#818cf8" stroke-width="1.4" stroke-opacity="0.8" />
+        <text x="0" y="5" font-size="13" font-weight="600" fill="#a5b4fc">📄 LuaLaTeX Resumes</text>
+      </g>
+
+      <!-- Badge 4: STAR Interview Prep -->
+      <g transform="translate(320, 0)" class="badge-hover">
+        <rect x="-100" y="-18" width="200" height="36" rx="10" fill="#0f172a" stroke="#c084fc" stroke-width="1.4" stroke-opacity="0.8" />
+        <text x="0" y="5" font-size="13" font-weight="600" fill="#e879f9">🎯 STAR Interview Prep</text>
+      </g>
+    </g>
+
+    <!-- Bottom Tech Stack Matrix -->
+    <g transform="translate(600, 315)" font-size="13" font-weight="500" fill="#64748b">
+      <text x="0" y="0">
+        Claude Code <tspan fill="#38bdf8">•</tspan> Google Antigravity <tspan fill="#38bdf8">•</tspan> OpenAI Codex <tspan fill="#38bdf8">•</tspan> Gemini CLI <tspan fill="#38bdf8">•</tspan> LuaLaTeX
+      </text>
+    </g>
+  </g>
+
+  <!-- Right Graphic: AI Neural Core Icon -->
+  <g transform="translate(1065, 185)" class="floating">
+    <!-- Outer hexagonal pulse ring -->
+    <polygon points="0,-60 52,-30 52,30 0,60 -52,30 -52,-30" fill="none" stroke="#818cf8" stroke-width="1.5" stroke-opacity="0.4" stroke-dasharray="6 4">
+      <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="20s" repeatCount="indefinite" />
+    </polygon>
+    
+    <polygon points="0,-45 39,-22 39,22 0,45 -39,22 -39,-22" fill="#0f172a" stroke="#c084fc" stroke-width="1.5" stroke-opacity="0.7">
+      <animate attributeName="stroke" values="#c084fc;#38bdf8;#c084fc" dur="4s" repeatCount="indefinite" />
+    </polygon>
+
+    <!-- Core Rocket/Sparkle Emblem -->
+    <g transform="translate(-16, -16) scale(1.3)">
+      <path d="M12 2.5s-4 4.5-4 9.5c0 3 2 5.5 4 5.5s4-2.5 4-5.5c0-5-4-9.5-4-9.5z" fill="url(#titleShimmer)" />
+      <circle cx="12" cy="10" r="2" fill="#0f172a" />
+      <path d="M7 13.5c-2 1-3.5 3.5-3.5 3.5s2.5.5 4.5-.5" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round" fill="none" />
+      <path d="M17 13.5c2 1 3.5 3.5 3.5 3.5s-2.5.5-4.5-.5" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round" fill="none" />
+    </g>
+  </g>
+</svg>
