@@ -179,8 +179,12 @@ def check_permissions() -> None:
         errors.append(".claude/settings.json: permissions must be an object")
         return
     allow = permissions.get("allow", [])
-    if not isinstance(allow, list) or not all(isinstance(entry, str) for entry in allow):
-        errors.append(".claude/settings.json: permissions.allow must be a list of strings")
+    if not isinstance(allow, list) or not all(
+        isinstance(entry, str) for entry in allow
+    ):
+        errors.append(
+            ".claude/settings.json: permissions.allow must be a list of strings"
+        )
         return
     for entry in allow:
         if entry not in ALLOWED_PERMISSIONS:
@@ -228,7 +232,9 @@ def check_package_manifests() -> None:
         p for p in ROOT.glob(".agents/**/package.json") if "node_modules" not in p.parts
     ]
     if not manifests:
-        errors.append(".agents: no package.json files found - glob roots are wrong or the tree moved")
+        errors.append(
+            ".agents: no package.json files found - glob roots are wrong or the tree moved"
+        )
     for manifest in manifests:
         relpath = manifest.relative_to(ROOT)
         try:

@@ -36,13 +36,16 @@ FRAMEWORK_FILES = [
 
 UPSTREAM_REPO_SLUG = "ishandutta2007/Awesome-AI-Job-Hunting"
 
+
 def run_git(args: list[str]) -> tuple[int, str, str]:
     res = subprocess.run(["git"] + args, cwd=str(ROOT), capture_output=True, text=True)
     return res.returncode, res.stdout, res.stderr
 
+
 def get_remote_url(remote_name: str) -> str:
     rc, stdout, _ = run_git(["remote", "get-url", remote_name])
     return stdout.strip() if rc == 0 else ""
+
 
 def get_framework_version_from_text(text: str) -> str | None:
     if not text.startswith("---\n"):
@@ -57,6 +60,7 @@ def get_framework_version_from_text(text: str) -> str | None:
                 return v.strip().strip('"').strip("'")
     return None
 
+
 def parse_semver(version_str: str) -> tuple[int, int, int]:
     # Clean version string (e.g. remove 'v' prefix)
     match = re.match(r"^v?(\d+)\.(\d+)\.(\d+)", version_str)
@@ -64,11 +68,24 @@ def parse_semver(version_str: str) -> tuple[int, int, int]:
         return (0, 0, 0)
     return tuple(int(x) for x in match.groups())
 
+
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Check for framework updates upstream.")
-    parser.add_argument("--remote", default="upstream", help="Name of the git remote for upstream (default: upstream)")
-    parser.add_argument("--branch", default="master", help="Branch name of the upstream repo (default: master)")
-    parser.add_argument("--no-fetch", action="store_true", help="Skip fetching from remote")
+    parser = argparse.ArgumentParser(
+        description="Check for framework updates upstream."
+    )
+    parser.add_argument(
+        "--remote",
+        default="upstream",
+        help="Name of the git remote for upstream (default: upstream)",
+    )
+    parser.add_argument(
+        "--branch",
+        default="master",
+        help="Branch name of the upstream repo (default: master)",
+    )
+    parser.add_argument(
+        "--no-fetch", action="store_true", help="Skip fetching from remote"
+    )
     args = parser.parse_args()
 
     # Verify remote exists
@@ -87,7 +104,10 @@ def main() -> int:
     # user is not misled by the final '[OK]' line below. (Direct clones of
     # the template repo have origin == the upstream repo, so no warning.)
     # GitHub serves repo paths case-insensitively, so compare lowercased.
-    if remote != args.remote and UPSTREAM_REPO_SLUG.lower() not in get_remote_url(remote).lower():
+    if (
+        remote != args.remote
+        and UPSTREAM_REPO_SLUG.lower() not in get_remote_url(remote).lower()
+    ):
         print(
             f"Warning: Remote '{remote}' does not point to the ai-job-search "
             f"template repo ({UPSTREAM_REPO_SLUG}), so this check compares your "
@@ -107,11 +127,13 @@ def main() -> int:
     # Verify ref exists
     rc, _, _ = run_git(["rev-parse", "--verify", ref])
     if rc != 0:
-        print(f"Error: Ref '{ref}' does not exist. Make sure you fetched and specified the correct branch.")
+        print(
+            f"Error: Ref '{ref}' does not exist. Make sure you fetched and specified the correct branch."
+        )
         return 1
 
     print(f"Comparing local files against upstream '{ref}'...\n")
-    
+
     updates_available = []
     errors = []
     missing_upstream = []
@@ -125,7 +147,7 @@ def main() -> int:
         # Get local version
         local_text = local_path.read_text(encoding="utf-8")
         local_ver = get_framework_version_from_text(local_text)
-        
+
         # Get upstream version
         rc, upstream_text, git_err = run_git(["show", f"{ref}:{rel_path}"])
         if rc != 0:
@@ -136,25 +158,30 @@ def main() -> int:
             if "does not exist" in git_err or "exists on disk, but not in" in git_err:
                 missing_upstream.append(rel_path)
             else:
-                errors.append(f"Failed to read upstream version of {rel_path}: {git_err.strip()}")
+                errors.append(
+                    f"Failed to read upstream version of {rel_path}: {git_err.strip()}"
+                )
             continue
-            
+
         upstream_ver = get_framework_version_from_text(upstream_text)
-        
+
         if not local_ver:
-            errors.append(f"Local file {rel_path} is missing 'framework_version' in frontmatter.")
+            errors.append(
+                f"Local file {rel_path} is missing 'framework_version' in frontmatter."
+            )
             continue
         if not upstream_ver:
             continue
-            
-        if parse_semver(upstream_ver) > parse_semver(local_ver):
-            updates_available.append({
-                "filename": Path(rel_path).name,
-                "local": local_ver,
-                "upstream": upstream_ver,
-                "path": rel_path
-            })
 
+        if parse_semver(upstream_ver) > parse_semver(local_ver):
+            updates_available.append(
+                {
+                    "filename": Path(rel_path).name,
+                    "local": local_ver,
+                    "upstream": upstream_ver,
+                    "path": rel_path,
+                }
+            )
 
     if errors:
         print("Configuration errors:")
@@ -163,7 +190,9 @@ def main() -> int:
         print()
 
     if missing_upstream:
-        print("Files present locally but missing from the upstream ref (possibly renamed or deleted upstream):")
+        print(
+            "Files present locally but missing from the upstream ref (possibly renamed or deleted upstream):"
+        )
         for path in missing_upstream:
             print(f"  - {path}")
         print()
@@ -171,7 +200,9 @@ def main() -> int:
     if updates_available:
         print("[UPDATE] Upstream updates available for framework methodology files:")
         for up in updates_available:
-            print(f"  - {up['filename']}: local {up['local']} < upstream {up['upstream']}")
+            print(
+                f"  - {up['filename']}: local {up['local']} < upstream {up['upstream']}"
+            )
             print(f"    Diff command: git diff {ref} -- {up['path']}")
             print()
         print("Review these changes to see if they fit your personalized fork!")
@@ -191,6 +222,7 @@ def main() -> int:
         f"python3 tools/upstream_triage.py --remote {remote}"
     )
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main())

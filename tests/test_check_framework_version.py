@@ -11,6 +11,7 @@ Each test builds an isolated git repo with the script copied inside it
 (the script resolves ROOT from __file__), so the real repo is never read
 or written.
 """
+
 import os
 import shutil
 import subprocess

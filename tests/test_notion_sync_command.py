@@ -6,6 +6,7 @@ lint_skills.py enforces, the gitignore entry that keeps the personal sync
 state out of version control, and the privacy rule that forbids syncing
 document content to Notion.
 """
+
 import subprocess
 import sys
 import unittest
@@ -13,6 +14,7 @@ from pathlib import Path
 
 try:
     import yaml  # noqa: F401 - only probing availability for the lint integration test
+
     _HAVE_YAML = True
 except ImportError:
     _HAVE_YAML = False
@@ -62,7 +64,11 @@ class NotionSyncCommandSpec(unittest.TestCase):
             capture_output=True,
             text=True,
         )
-        self.assertEqual(result.returncode, 0, f"lint_skills.py failed:\n{result.stdout}{result.stderr}")
+        self.assertEqual(
+            result.returncode,
+            0,
+            f"lint_skills.py failed:\n{result.stdout}{result.stderr}",
+        )
 
 
 if __name__ == "__main__":

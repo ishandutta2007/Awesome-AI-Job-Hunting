@@ -24,6 +24,7 @@ from salary_lookup import (
 # format_entry tests (from #75 / #98)
 # ---------------------------------------------------------------------------
 
+
 class FormatEntryTests(unittest.TestCase):
     def test_zero_count_is_displayed_as_zero(self):
         entry = {
@@ -83,7 +84,9 @@ class FormatEntryTests(unittest.TestCase):
                 },
             },
         }
-        rendered = format_entry(entry, {"index_baseline": 40000, "index_label": "Salary"})
+        rendered = format_entry(
+            entry, {"index_baseline": 40000, "index_label": "Salary"}
+        )
         self.assertIn("45000.0", rendered)
         self.assertIn("+12.5%", rendered)
 
@@ -91,6 +94,7 @@ class FormatEntryTests(unittest.TestCase):
 # ---------------------------------------------------------------------------
 # match_score tests (from #106)
 # ---------------------------------------------------------------------------
+
 
 class TestMatchScoreExactMatch(unittest.TestCase):
     def test_exact_match_returns_100(self):
@@ -157,6 +161,7 @@ class TestMatchScoreNoOverlap(unittest.TestCase):
 # search_company tests (from #75 / #98 and #106)
 # ---------------------------------------------------------------------------
 
+
 def _make_data(*entries):
     return {"companies": list(entries)}
 
@@ -200,7 +205,9 @@ class ValidateDataTests(unittest.TestCase):
         self.assert_invalid_data([], "top-level JSON value must be an object")
 
     def test_companies_must_be_list(self):
-        self.assert_invalid_data({"companies": {"company": "Example Corp"}}, "'companies' must be a list")
+        self.assert_invalid_data(
+            {"companies": {"company": "Example Corp"}}, "'companies' must be a list"
+        )
 
     def test_metadata_must_be_object_when_provided(self):
         self.assert_invalid_data(
@@ -228,13 +235,21 @@ class ValidateDataTests(unittest.TestCase):
         self.assertIn("tools/README_SALARY_TOOL.md", stderr.getvalue())
 
     def test_company_entry_must_be_object(self):
-        self.assert_invalid_data({"companies": ["Example Corp"]}, "companies[1] must be an object")
+        self.assert_invalid_data(
+            {"companies": ["Example Corp"]}, "companies[1] must be an object"
+        )
 
     def test_company_name_is_required(self):
-        self.assert_invalid_data({"companies": [{"city": "Aarhus"}]}, "companies[1].company must be a non-empty string")
+        self.assert_invalid_data(
+            {"companies": [{"city": "Aarhus"}]},
+            "companies[1].company must be a non-empty string",
+        )
 
     def test_company_name_must_not_be_blank(self):
-        self.assert_invalid_data({"companies": [{"company": "  "}]}, "companies[1].company must be a non-empty string")
+        self.assert_invalid_data(
+            {"companies": [{"company": "  "}]},
+            "companies[1].company must be a non-empty string",
+        )
 
     def test_city_must_be_string_when_provided(self):
         self.assert_invalid_data(
@@ -258,9 +273,7 @@ class ValidateDataShapeTests(ValidateDataTests):
 
     def test_non_numeric_count_rejected(self):
         data = {
-            "companies": [
-                {"company": "Acme", "categories": {"eng": {"count": "many"}}}
-            ]
+            "companies": [{"company": "Acme", "categories": {"eng": {"count": "many"}}}]
         }
         self.assert_invalid_data(data, "count must be a number")
 
@@ -341,9 +354,7 @@ class UtilityTests(unittest.TestCase):
     def test_normalize_strips_dotted_amba_suffix_same_as_undotted(self):
         # The dotted form ("A.M.B.A.") must normalize identically to the
         # undotted form ("amba"), same as A/S vs ApS variants above.
-        self.assertEqual(
-            normalize("Arla Foods A.M.B.A."), normalize("Arla Foods amba")
-        )
+        self.assertEqual(normalize("Arla Foods A.M.B.A."), normalize("Arla Foods amba"))
         self.assertEqual(normalize("Arla Foods A.M.B.A."), "arlafoods")
 
     def test_anglicize_replaces_danish_chars(self):
@@ -354,7 +365,9 @@ class UtilityTests(unittest.TestCase):
     def test_extract_core_words(self):
         self.assertEqual(extract_core_words("Novo Nordisk A/S"), ["novo", "nordisk"])
         self.assertEqual(extract_core_words("A/S"), [])
-        self.assertEqual(extract_core_words("Test Company (Sub-entity)"), ["test", "company"])
+        self.assertEqual(
+            extract_core_words("Test Company (Sub-entity)"), ["test", "company"]
+        )
 
 
 class MatchScoreTests(unittest.TestCase):

@@ -22,9 +22,11 @@ root_agents = ROOT / "AGENTS.md"
 if root_agents.exists():
     FRAMEWORK_FILES.append(root_agents)
 
+
 def run_git(args: list[str]) -> tuple[int, str, str]:
     res = subprocess.run(["git"] + args, cwd=str(ROOT), capture_output=True, text=True)
     return res.returncode, res.stdout, res.stderr
+
 
 def get_base_commit() -> str | None:
     # If in GitHub Actions PR, use the target branch's base ref
@@ -52,6 +54,7 @@ def get_base_commit() -> str | None:
 
     return None
 
+
 def parse_frontmatter(path: Path) -> dict:
     if not path.exists():
         return {}
@@ -61,7 +64,7 @@ def parse_frontmatter(path: Path) -> dict:
     end = text.find("\n---", 4)
     if end == -1:
         return {}
-    
+
     # Simple parser for YAML/frontmatter
     data = {}
     for line in text[4:end].splitlines():
@@ -70,6 +73,7 @@ def parse_frontmatter(path: Path) -> dict:
             data[k.strip()] = v.strip().strip('"').strip("'")
     return data
 
+
 def has_non_trivial_changes(file_path: Path, base_commit: str) -> bool:
     # Get diff of the file from base_commit to HEAD
     rel_path = str(file_path.relative_to(ROOT))
@@ -77,14 +81,14 @@ def has_non_trivial_changes(file_path: Path, base_commit: str) -> bool:
     if rc != 0:
         # If diff fails (e.g. file is new/untracked), it's a change
         return True
-    
+
     # Parse diff lines
     # We want to count lines added/removed that:
     # - do not match framework_version line
     # - are not empty/whitespace only
     meaningful_changes = 0
     version_changed = False
-    
+
     for line in stdout.splitlines():
         if line.startswith("+++") or line.startswith("---") or line.startswith("@@"):
             continue
@@ -99,24 +103,25 @@ def has_non_trivial_changes(file_path: Path, base_commit: str) -> bool:
             if content == "---":
                 continue
             meaningful_changes += 1
-            
+
     # If the version key itself was modified, we don't fail, regardless of other changes
     if version_changed:
         return False
-        
+
     # If there are meaningful changes but the version was not changed
     return meaningful_changes > 0
 
+
 def main() -> int:
     errors = []
-    
+
     # 1. Lint: Check that all framework files have framework_version in frontmatter
     for path in FRAMEWORK_FILES:
         rel_path = str(path.relative_to(ROOT))
         fm = parse_frontmatter(path)
         if "framework_version" not in fm:
             errors.append(f"{rel_path}: missing 'framework_version' in frontmatter")
-            
+
     # 2. Check for missing version bumps in modified files
     base_commit = get_base_commit()
     if base_commit:
@@ -132,16 +137,19 @@ def main() -> int:
                     f"Please update the version in the frontmatter."
                 )
     else:
-        print("No base commit found (e.g. initial commit or shallow clone without base branch). Skipping diff checks.")
+        print(
+            "No base commit found (e.g. initial commit or shallow clone without base branch). Skipping diff checks."
+        )
 
     if errors:
         print("Framework Version Check Failed:")
         for err in errors:
             print(f"  - {err}")
         return 1
-        
+
     print("Framework Version Check: OK")
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main())

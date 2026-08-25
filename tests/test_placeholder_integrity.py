@@ -15,13 +15,20 @@ the sentinels exist in the pristine files, and (c) that simulating the
 /setup edit destroys at least one checked sentinel per file - i.e. the
 guard actually fires on the failure it exists to catch.
 """
+
 import unittest
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
 CI = REPO / ".github" / "workflows" / "ci.yml"
 EXAMPLE_CV = REPO / "cv" / "main_example.tex"
-PROFILE = REPO / ".claude" / "skills" / "job-application-assistant" / "01-candidate-profile.md"
+PROFILE = (
+    REPO
+    / ".claude"
+    / "skills"
+    / "job-application-assistant"
+    / "01-candidate-profile.md"
+)
 
 # The literal sentinel strings (unescaped) that ci.yml's grep patterns match.
 CV_SENTINELS = ["\\name{[First]}{[Last]}", "\\email{[your.email@example.com]}"]
@@ -64,7 +71,9 @@ class TestCvSentinelsAreDataLocated(unittest.TestCase):
 
     def test_setup_edit_destroys_the_sentinels(self):
         personalized = personalize_cv(self.cv)
-        self.assertNotEqual(personalized, self.cv, "the simulated /setup edit must change the file")
+        self.assertNotEqual(
+            personalized, self.cv, "the simulated /setup edit must change the file"
+        )
         surviving = [s for s in CV_SENTINELS if s in personalized]
         self.assertEqual(
             surviving,

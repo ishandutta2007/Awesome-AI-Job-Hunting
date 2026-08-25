@@ -29,6 +29,7 @@ They also pin the review findings on the fix itself:
 They follow the CASES-table pattern from test_apply_records_application.py so
 that adding a new reader is a one-line addition to READER_CASES.
 """
+
 import re
 import unittest
 from pathlib import Path
@@ -260,7 +261,9 @@ class ReadersBucketMap(unittest.TestCase):
     def test_notion_sync_uses_underscore_status_spellings(self):
         """Notion Status select options must match canonical tracker spellings
         so that upserted values are consistent with what /outcome writes."""
-        step3_text = section(NOTION_SYNC, "## Step 3: Load Sync State and Locate the Database")
+        step3_text = section(
+            NOTION_SYNC, "## Step 3: Load Sync State and Locate the Database"
+        )
         self.assertIn(
             "no_response",
             step3_text,

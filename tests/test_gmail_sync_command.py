@@ -10,6 +10,7 @@ operators for the stated intent are `-in:sent -in:drafts` (review
 finding F18, 2026-08-19). The failure mode is silent under-detection: a
 missed rejection or interview invite just looks like "no updates".
 """
+
 import unittest
 from pathlib import Path
 

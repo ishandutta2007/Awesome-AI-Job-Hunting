@@ -34,8 +34,13 @@ class TriageRepoFixture(unittest.TestCase):
         git(self.root, "init", "-b", "master")
         git(self.root, "config", "user.name", "Test")
         git(self.root, "config", "user.email", "test@example.com")
-        git(self.root, "remote", "add", "upstream",
-            f"https://github.com/{UPSTREAM_SLUG}.git")
+        git(
+            self.root,
+            "remote",
+            "add",
+            "upstream",
+            f"https://github.com/{UPSTREAM_SLUG}.git",
+        )
 
         self.write("shared.txt", "base\n")
         self.write("kept.py", "print('hi')\n")
@@ -57,7 +62,9 @@ class TriageRepoFixture(unittest.TestCase):
     def run_triage(self, *args) -> subprocess.CompletedProcess:
         return subprocess.run(
             [sys.executable, str(self.root / "tools" / "upstream_triage.py"), *args],
-            cwd=self.root, capture_output=True, text=True,
+            cwd=self.root,
+            capture_output=True,
+            text=True,
         )
 
 
@@ -143,8 +150,9 @@ class WontPortTests(TriageRepoFixture):
         rejected = self.commit("upstream: feature the fork rejects")
         self.set_upstream_to_head()
         git(self.root, "reset", "--hard", "HEAD~1")
-        self.write(".github/upstream-wontport.txt",
-                   f"{rejected[:9]}  # rejected on purpose\n")
+        self.write(
+            ".github/upstream-wontport.txt", f"{rejected[:9]}  # rejected on purpose\n"
+        )
         self.commit("fork: won't-port list")
 
         result = self.run_triage()
@@ -184,8 +192,9 @@ class WorkflowGuardTests(unittest.TestCase):
                 ref = stripped.split("uses:", 1)[1].strip()
                 self.assertIn("@", ref)
                 sha = ref.split("@", 1)[1].split()[0]
-                self.assertRegex(sha, r"^[0-9a-f]{40}$",
-                                 f"action not SHA-pinned: {ref}")
+                self.assertRegex(
+                    sha, r"^[0-9a-f]{40}$", f"action not SHA-pinned: {ref}"
+                )
 
 
 if __name__ == "__main__":

@@ -9,6 +9,7 @@ pin that the warning lives at the point of decision (adjacent to both
 fork commands) and that /setup checks the origin's visibility BEFORE
 writing anything, not in its closing notes.
 """
+
 import re
 import unittest
 from pathlib import Path
@@ -49,12 +50,16 @@ class TestForkWarningsAtTheDecisionPoint(unittest.TestCase):
 
     def test_readme_quick_start_warns_next_to_the_fork_command(self):
         body = section(README.read_text(encoding="utf-8"), "### 1. Fork and clone")
-        self.assertIn("gh repo fork", body, "sanity: the fork command lives in this section")
+        self.assertIn(
+            "gh repo fork", body, "sanity: the fork command lives in this section"
+        )
         self.assert_warns(body, "README")
 
     def test_setup_guide_warns_next_to_the_fork_command(self):
         body = section(SETUP_GUIDE.read_text(encoding="utf-8"), "## 2. Fork and clone")
-        self.assertIn("gh repo fork", body, "sanity: the fork command lives in this section")
+        self.assertIn(
+            "gh repo fork", body, "sanity: the fork command lives in this section"
+        )
         self.assert_warns(body, "SETUP.md")
 
 

@@ -24,8 +24,11 @@ Exit 0 = the retry may proceed. Exit 1 = do not retry; go to escalation step 3.
 import re, subprocess, sys
 from urllib.parse import urlsplit, unquote
 
-BROWSER = ('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
-           '(KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36')
+BROWSER = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36"
+)
+
 
 def _fetch(url, ua):
     """curl, not urllib: some hosts (jobup.ch) hang urllib indefinitely while
@@ -35,12 +38,30 @@ def _fetch(url, ua):
     # scheme://host/robots.txt before calling here, so this is hardening for
     # direct callers rather than a hole in the gate path itself.
     r = subprocess.run(
-        ['curl', '-sS', '-L', '--max-redirs', '5', '--max-time', '12', '-A', ua,
-         '-H', 'Accept: text/plain,*/*', '-w', '\n%{http_code}', '--', url],
-        capture_output=True, text=True, timeout=20)
+        [
+            "curl",
+            "-sS",
+            "-L",
+            "--max-redirs",
+            "5",
+            "--max-time",
+            "12",
+            "-A",
+            ua,
+            "-H",
+            "Accept: text/plain,*/*",
+            "-w",
+            "\n%{http_code}",
+            "--",
+            url,
+        ],
+        capture_output=True,
+        text=True,
+        timeout=20,
+    )
     if r.returncode != 0:
-        raise RuntimeError('curl exit %d' % r.returncode)
-    body, _, code = r.stdout.rpartition('\n')
+        raise RuntimeError("curl exit %d" % r.returncode)
+    body, _, code = r.stdout.rpartition("\n")
     return body, int(code or 0)
 
 
@@ -56,32 +77,39 @@ def is_robots_body(text):
     if not text.strip():
         return True
     for raw in text.splitlines():
-        line = raw.split('#', 1)[0].strip().lower()
-        if ':' in line and line.split(':', 1)[0].strip() in (
-            'user-agent', 'allow', 'disallow', 'sitemap', 'crawl-delay', 'host',
+        line = raw.split("#", 1)[0].strip().lower()
+        if ":" in line and line.split(":", 1)[0].strip() in (
+            "user-agent",
+            "allow",
+            "disallow",
+            "sitemap",
+            "crawl-delay",
+            "host",
         ):
             return True
     return False
+
 
 def _groups(text):
     """user-agent -> [(is_allow, pattern)], tolerating blank lines inside a record."""
     out, agents, expect = {}, [], True
     for raw in text.splitlines():
-        line = raw.split('#', 1)[0].strip()
-        if not line or ':' not in line:
+        line = raw.split("#", 1)[0].strip()
+        if not line or ":" not in line:
             continue
-        field, _, value = line.partition(':')
+        field, _, value = line.partition(":")
         field, value = field.strip().lower(), value.strip()
-        if field == 'user-agent':
+        if field == "user-agent":
             if not expect:
                 agents, expect = [], True
             agents.append(value.lower())
             out.setdefault(value.lower(), [])
-        elif field in ('allow', 'disallow') and agents:
+        elif field in ("allow", "disallow") and agents:
             expect = False
             for a in agents:
-                out[a].append((field == 'allow', value))
+                out[a].append((field == "allow", value))
     return out
+
 
 def _match(pattern, path):
     """RFC 9309 wildcard match; returns match length or -1.
@@ -90,52 +118,59 @@ def _match(pattern, path):
     this, "Disallow: /foo%20bar" never matched "/foo bar" and the rule was
     silently skipped - a fail-open on any site that encodes its own rules.
     """
-    if pattern == '':
+    if pattern == "":
         return -1
     pattern = unquote(pattern)
-    rx = '^' + ''.join('.*' if c == '*' else ('$' if c == '$' else re.escape(c)) for c in pattern)
+    rx = "^" + "".join(
+        ".*" if c == "*" else ("$" if c == "$" else re.escape(c)) for c in pattern
+    )
     return len(pattern) if re.match(rx, path) else -1
+
 
 def allowed(text, agent, path):
     g = _groups(text)
-    rules = g.get(agent.lower()) or g.get('*') or []
+    rules = g.get(agent.lower()) or g.get("*") or []
     best_len, best_allow = -1, True
     for is_allow, pat in rules:
         n = _match(pat, path)
         if n > best_len or (n == best_len and n >= 0 and not is_allow):
-            best_len, best_allow = n, is_allow      # ties -> Disallow wins (cautious)
+            best_len, best_allow = n, is_allow  # ties -> Disallow wins (cautious)
     return True if best_len < 0 else best_allow
+
 
 def gate(url):
     parts = urlsplit(url)
-    path = unquote(parts.path) or '/'
+    path = unquote(parts.path) or "/"
     if parts.query:
-        path += '?' + parts.query
-    robots = f'{parts.scheme}://{parts.netloc}/robots.txt'
-    body, last = None, 'no attempt'
-    for ua in ('Claude-User', BROWSER):
+        path += "?" + parts.query
+    robots = f"{parts.scheme}://{parts.netloc}/robots.txt"
+    body, last = None, "no attempt"
+    for ua in ("Claude-User", BROWSER):
         try:
             text, code = _fetch(robots, ua)
         except Exception as e:
-            last = type(e).__name__; continue
+            last = type(e).__name__
+            continue
         if code == 404:
-            return 0, 'ALLOWED - no robots.txt published'
+            return 0, "ALLOWED - no robots.txt published"
         if code == 200:
             if not is_robots_body(text):
-                last = 'HTTP 200 but the body is not a robots.txt'
+                last = "HTTP 200 but the body is not a robots.txt"
                 continue
-            body = text; break
-        last = 'HTTP %d' % code
+            body = text
+            break
+        last = "HTTP %d" % code
     if body is None:
-        return 1, 'UNCONFIRMED (%s) - do not retry, go to step 3' % last
-    for a in ('Claude-User', '*'):
+        return 1, "UNCONFIRMED (%s) - do not retry, go to step 3" % last
+    for a in ("Claude-User", "*"):
         if not allowed(body, a, path):
-            return 1, f'DISALLOWED for {a} - do not retry, go to step 3'
-    return 0, 'ALLOWED - robots.txt permits this path'
+            return 1, f"DISALLOWED for {a} - do not retry, go to step 3"
+    return 0, "ALLOWED - robots.txt permits this path"
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print('usage: python3 tools/robots_check.py <url>', file=sys.stderr)
+        print("usage: python3 tools/robots_check.py <url>", file=sys.stderr)
         sys.exit(2)
     rc, msg = gate(sys.argv[1])
     print(msg)

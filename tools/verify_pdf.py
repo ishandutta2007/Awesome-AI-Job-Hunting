@@ -29,7 +29,9 @@ def run_tool(command):
     except subprocess.CalledProcessError as exc:
         detail = (exc.stderr or "").strip() or (exc.stdout or "").strip()
         detail = detail or "command failed"
-        raise VerificationError(f"{command[0]} could not read the PDF: {detail}") from exc
+        raise VerificationError(
+            f"{command[0]} could not read the PDF: {detail}"
+        ) from exc
 
 
 def parse_page_count(pdfinfo_output):
@@ -65,7 +67,9 @@ def verify_pdf(pdf_path, expected_pages=None, min_chars=1, required_text=()):
 
     for required in required_text:
         if normalize_text(required) not in extracted_text:
-            raise VerificationError(f"text layer is missing required text: {required!r}")
+            raise VerificationError(
+                f"text layer is missing required text: {required!r}"
+            )
 
 
 def build_parser():

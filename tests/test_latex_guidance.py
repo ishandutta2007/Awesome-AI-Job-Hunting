@@ -14,6 +14,7 @@ files and the example sources are the only place a test can catch them:
   so a correct Danish CV fails the documented "no replacement
   characters" check and the agent is sent to "fix" a healthy document.
 """
+
 import re
 import unittest
 from pathlib import Path
@@ -53,7 +54,9 @@ class TestBulletBracketTrap(unittest.TestCase):
     def assert_no_unbraced_bracket_items(self, path):
         offending = [
             f"{path.name}:{lineno}: {line.strip()}"
-            for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1)
+            for lineno, line in enumerate(
+                path.read_text(encoding="utf-8").splitlines(), 1
+            )
             if UNBRACED_BRACKET_ITEM.search(line)
         ]
         self.assertEqual(
@@ -118,7 +121,9 @@ class TestAtsExtractionEncoding(unittest.TestCase):
     def assert_pdftotext_commands_pin_utf8(self, path):
         offending = [
             f"{path.name}:{lineno}: {line.strip()}"
-            for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1)
+            for lineno, line in enumerate(
+                path.read_text(encoding="utf-8").splitlines(), 1
+            )
             if "pdftotext" in line and "-layout" in line and "-enc UTF-8" not in line
         ]
         self.assertEqual(

@@ -27,6 +27,7 @@ Both file lists are derived - the documents folders from the repository
 tree, the profile files from /setup Step 3's own headings - so a new drop
 folder or a new /setup target fails this test until /reset covers it.
 """
+
 import re
 import subprocess
 import unittest
@@ -124,7 +125,9 @@ class TestResetCoversEveryPersonalizedSkillFile(unittest.TestCase):
 
     def test_preview_lists_every_personalized_skill_file(self):
         preview = section(
-            self.text, "### If scope includes `profile`:", "### If scope includes `documents`:"
+            self.text,
+            "### If scope includes `profile`:",
+            "### If scope includes `documents`:",
         )
         missing = sorted(f for f in self.files if f not in preview)
         self.assertEqual(

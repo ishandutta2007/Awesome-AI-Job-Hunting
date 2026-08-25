@@ -43,14 +43,41 @@ class UpstreamCheckerRepoFixture(unittest.TestCase):
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(FRONTMATTER, encoding="utf-8")
 
-        subprocess.run(["git", "init", "-b", "master"], cwd=self.root, check=True, capture_output=True)
-        subprocess.run(["git", "config", "user.name", "Test"], cwd=self.root, check=True, capture_output=True)
-        subprocess.run(["git", "config", "user.email", "test@example.com"], cwd=self.root, check=True, capture_output=True)
-        subprocess.run(["git", "add", "-A"], cwd=self.root, check=True, capture_output=True)
-        subprocess.run(["git", "commit", "-m", "init"], cwd=self.root, check=True, capture_output=True)
+        subprocess.run(
+            ["git", "init", "-b", "master"],
+            cwd=self.root,
+            check=True,
+            capture_output=True,
+        )
+        subprocess.run(
+            ["git", "config", "user.name", "Test"],
+            cwd=self.root,
+            check=True,
+            capture_output=True,
+        )
+        subprocess.run(
+            ["git", "config", "user.email", "test@example.com"],
+            cwd=self.root,
+            check=True,
+            capture_output=True,
+        )
+        subprocess.run(
+            ["git", "add", "-A"], cwd=self.root, check=True, capture_output=True
+        )
+        subprocess.run(
+            ["git", "commit", "-m", "init"],
+            cwd=self.root,
+            check=True,
+            capture_output=True,
+        )
 
     def add_remote(self, name: str, url: str) -> None:
-        subprocess.run(["git", "remote", "add", name, url], cwd=self.root, check=True, capture_output=True)
+        subprocess.run(
+            ["git", "remote", "add", name, url],
+            cwd=self.root,
+            check=True,
+            capture_output=True,
+        )
 
     def materialize_remote_ref(self, name: str) -> None:
         subprocess.run(
@@ -62,7 +89,12 @@ class UpstreamCheckerRepoFixture(unittest.TestCase):
 
     def run_checker(self, *args) -> subprocess.CompletedProcess:
         return subprocess.run(
-            [sys.executable, str(self.root / "tools" / "check_upstream_updates.py"), "--no-fetch", *args],
+            [
+                sys.executable,
+                str(self.root / "tools" / "check_upstream_updates.py"),
+                "--no-fetch",
+                *args,
+            ],
             cwd=self.root,
             capture_output=True,
             text=True,
@@ -80,7 +112,9 @@ class ForkWithoutUpstreamRemoteTests(UpstreamCheckerRepoFixture):
 
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("Falling back to 'origin'", result.stdout)
-        self.assertIn("does not point to the ai-job-search template repo", result.stdout)
+        self.assertIn(
+            "does not point to the ai-job-search template repo", result.stdout
+        )
         self.assertNotIn("up to date with upstream!", result.stdout)
         self.assertIn("up to date with origin/master", result.stdout)
 
@@ -96,7 +130,9 @@ class DirectCloneFallbackTests(UpstreamCheckerRepoFixture):
 
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("Falling back to 'origin'", result.stdout)
-        self.assertNotIn("does not point to the ai-job-search template repo", result.stdout)
+        self.assertNotIn(
+            "does not point to the ai-job-search template repo", result.stdout
+        )
         self.assertIn("up to date with origin/master", result.stdout)
 
     def test_clone_with_lowercased_template_url_falls_back_without_fork_warning(self):
@@ -113,7 +149,9 @@ class DirectCloneFallbackTests(UpstreamCheckerRepoFixture):
 
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("Falling back to 'origin'", result.stdout)
-        self.assertNotIn("does not point to the ai-job-search template repo", result.stdout)
+        self.assertNotIn(
+            "does not point to the ai-job-search template repo", result.stdout
+        )
 
 
 class UpstreamRemotePresentTests(UpstreamCheckerRepoFixture):
@@ -128,7 +166,9 @@ class UpstreamRemotePresentTests(UpstreamCheckerRepoFixture):
 
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertNotIn("Falling back to 'origin'", result.stdout)
-        self.assertNotIn("does not point to the ai-job-search template repo", result.stdout)
+        self.assertNotIn(
+            "does not point to the ai-job-search template repo", result.stdout
+        )
         self.assertIn("up to date with upstream/master", result.stdout)
 
 
@@ -143,8 +183,18 @@ class UpstreamRefMissingFileTests(UpstreamCheckerRepoFixture):
         self.add_remote("upstream", TEMPLATE_URL)
 
         # Upstream drops AGENTS.md (rename/delete) in a new commit.
-        subprocess.run(["git", "rm", "-q", "AGENTS.md"], cwd=self.root, check=True, capture_output=True)
-        subprocess.run(["git", "commit", "-qm", "drop AGENTS.md"], cwd=self.root, check=True, capture_output=True)
+        subprocess.run(
+            ["git", "rm", "-q", "AGENTS.md"],
+            cwd=self.root,
+            check=True,
+            capture_output=True,
+        )
+        subprocess.run(
+            ["git", "commit", "-qm", "drop AGENTS.md"],
+            cwd=self.root,
+            check=True,
+            capture_output=True,
+        )
         self.materialize_remote_ref("upstream")
 
         # The fork keeps its own copy locally, so only the upstream side

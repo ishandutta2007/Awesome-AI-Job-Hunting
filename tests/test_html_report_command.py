@@ -13,6 +13,7 @@ from pathlib import Path
 
 try:
     import yaml  # noqa: F401 - only probing availability for the lint integration test
+
     _HAVE_YAML = True
 except ImportError:
     _HAVE_YAML = False
@@ -56,11 +57,17 @@ class HtmlReportTrackerFieldTests(unittest.TestCase):
     # 14-column string is a substring of a 15-column header). Reading the
     # canonical line back from apply.md makes the simulated drift fail with a
     # clean list diff naming the missing column instead.
-    CANONICAL_HEADER = re.search(
-        r"^\s*(date,company,[a-z_,]+)$",
-        (REPO_ROOT / ".claude" / "commands" / "apply.md").read_text(encoding="utf-8"),
-        re.M,
-    ).group(1).split(",")
+    CANONICAL_HEADER = (
+        re.search(
+            r"^\s*(date,company,[a-z_,]+)$",
+            (REPO_ROOT / ".claude" / "commands" / "apply.md").read_text(
+                encoding="utf-8"
+            ),
+            re.M,
+        )
+        .group(1)
+        .split(",")
+    )
 
     def test_step1_parses_every_canonical_tracker_column(self):
         text = COMMAND_FILE.read_text(encoding="utf-8")
@@ -132,7 +139,9 @@ class HtmlReportGitignoreTests(unittest.TestCase):
         )
 
     def test_reports_folder_is_gitignored(self):
-        rules = {line.strip() for line in GITIGNORE.read_text(encoding="utf-8").splitlines()}
+        rules = {
+            line.strip() for line in GITIGNORE.read_text(encoding="utf-8").splitlines()
+        }
         self.assertIn(
             "reports/",
             rules,

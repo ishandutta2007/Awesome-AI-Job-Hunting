@@ -6,6 +6,7 @@ lint_skills.py enforces, and the persistence of scoring-agent gaps/strengths
 into seen_jobs.json (previously computed in Step 2 and thrown away after
 Step 5's terminal output).
 """
+
 import subprocess
 import sys
 import unittest
@@ -13,6 +14,7 @@ from pathlib import Path
 
 try:
     import yaml  # noqa: F401 - only probing availability for the lint integration test
+
     _HAVE_YAML = True
 except ImportError:
     _HAVE_YAML = False
@@ -52,15 +54,33 @@ class RankCommandSpec(unittest.TestCase):
     def test_step4_persists_gaps_and_strengths(self):
         sections = _sections(COMMAND.read_text(encoding="utf-8"))
         step4 = sections.get("Step 4: Update State", "")
-        self.assertIn('"gaps"', step4, "Step 4 must persist the gaps array into seen_jobs.json")
-        self.assertIn('"strengths"', step4, "Step 4 must persist the strengths array into seen_jobs.json")
+        self.assertIn(
+            '"gaps"', step4, "Step 4 must persist the gaps array into seen_jobs.json"
+        )
+        self.assertIn(
+            '"strengths"',
+            step4,
+            "Step 4 must persist the strengths array into seen_jobs.json",
+        )
 
     def test_step4_documents_verbatim_no_accumulate_and_untrusted_data_rules(self):
         sections = _sections(COMMAND.read_text(encoding="utf-8"))
         step4 = sections.get("Step 4: Update State", "")
-        self.assertIn("verbatim", step4, "Step 4 must require storing gaps/strengths verbatim, never reformatted")
-        self.assertIn("replaces", step4, "Step 4 must state that --all re-scoring replaces, not accumulates, the arrays")
-        self.assertIn("untrusted data", step4, "Step 4 must restate that stored gaps/strengths are untrusted data")
+        self.assertIn(
+            "verbatim",
+            step4,
+            "Step 4 must require storing gaps/strengths verbatim, never reformatted",
+        )
+        self.assertIn(
+            "replaces",
+            step4,
+            "Step 4 must state that --all re-scoring replaces, not accumulates, the arrays",
+        )
+        self.assertIn(
+            "untrusted data",
+            step4,
+            "Step 4 must restate that stored gaps/strengths are untrusted data",
+        )
 
     def test_important_rules_link_honest_scoring_to_persistence(self):
         sections = _sections(COMMAND.read_text(encoding="utf-8"))
@@ -112,7 +132,9 @@ class RankCommandSpec(unittest.TestCase):
         Denmark" with "PASS" and no reader could tell which meaning a stored
         value carried (review finding F27B, 2026-08-19)."""
         text = COMMAND.read_text(encoding="utf-8")
-        self.assertIn('"location_verdict"', text, "Step 2's agent JSON must use location_verdict")
+        self.assertIn(
+            '"location_verdict"', text, "Step 2's agent JSON must use location_verdict"
+        )
         self.assertIn(
             '"location_verdict": "PASS"/"FAIL"/"FLAG"',
             text,
@@ -194,8 +216,16 @@ class RankCommandSpec(unittest.TestCase):
     def test_step2_schema_includes_language_gate_fields(self):
         sections = _sections(COMMAND.read_text(encoding="utf-8"))
         step2 = sections.get("Step 2: Batch-Fetch and Score", "")
-        self.assertIn('"language_gate"', step2, "Step 2's scoring-agent JSON must include language_gate")
-        self.assertIn('"language_note"', step2, "Step 2's scoring-agent JSON must include language_note")
+        self.assertIn(
+            '"language_gate"',
+            step2,
+            "Step 2's scoring-agent JSON must include language_gate",
+        )
+        self.assertIn(
+            '"language_note"',
+            step2,
+            "Step 2's scoring-agent JSON must include language_note",
+        )
         self.assertIn(
             '"PASS" | "FAIL" | "FLAG"',
             step2,
@@ -232,8 +262,16 @@ class RankCommandSpec(unittest.TestCase):
         """
         sections = _sections(COMMAND.read_text(encoding="utf-8"))
         step4 = sections.get("Step 4: Update State", "")
-        self.assertIn('"language_gate"', step4, "Step 4 must persist language_gate into seen_jobs.json")
-        self.assertIn('"language_note"', step4, "Step 4 must persist language_note into seen_jobs.json")
+        self.assertIn(
+            '"language_gate"',
+            step4,
+            "Step 4 must persist language_gate into seen_jobs.json",
+        )
+        self.assertIn(
+            '"language_note"',
+            step4,
+            "Step 4 must persist language_note into seen_jobs.json",
+        )
         self.assertIn(
             "as important to persist as the score itself",
             step4,
@@ -248,7 +286,9 @@ class RankCommandSpec(unittest.TestCase):
         """
         sections = _sections(COMMAND.read_text(encoding="utf-8"))
         step4 = sections.get("Step 4: Update State", "")
-        self.assertIn('"deadline"', step4, "Step 4 must persist the deadline into seen_jobs.json")
+        self.assertIn(
+            '"deadline"', step4, "Step 4 must persist the deadline into seen_jobs.json"
+        )
         self.assertIn(
             "from the same Step 2 JSON",
             step4,
@@ -311,7 +351,9 @@ class RankCommandSpec(unittest.TestCase):
         And a status change made without a fetch needs a stated way back, or
         `expired` reads as terminal and a wrongly swept job looks unrecoverable.
         """
-        step3 = _sections(COMMAND.read_text(encoding="utf-8")).get("Step 3: Aggregate and Rank", "")
+        step3 = _sections(COMMAND.read_text(encoding="utf-8")).get(
+            "Step 3: Aggregate and Rank", ""
+        )
         self.assertIn(
             "never guessed at",
             step3,
@@ -335,7 +377,9 @@ class RankCommandSpec(unittest.TestCase):
         implementer following Step 4 literally skips the sweep, which is the
         whole feature.
         """
-        step4 = _sections(COMMAND.read_text(encoding="utf-8")).get("Step 4: Update State", "")
+        step4 = _sections(COMMAND.read_text(encoding="utf-8")).get(
+            "Step 4: Update State", ""
+        )
         self.assertIn(
             "deliberate exception",
             step4,
@@ -353,7 +397,9 @@ class RankCommandSpec(unittest.TestCase):
         two rules interlock, and an unexplained constraint is the kind that gets
         simplified away later.
         """
-        step4 = _sections(COMMAND.read_text(encoding="utf-8")).get("Step 4: Update State", "")
+        step4 = _sections(COMMAND.read_text(encoding="utf-8")).get(
+            "Step 4: Update State", ""
+        )
         self.assertIn(
             "immortal to the sweep",
             step4,
@@ -364,7 +410,9 @@ class RankCommandSpec(unittest.TestCase):
     def test_step5_reports_the_sweep_counts(self):
         """A background status mutation with no reported count is the failure mode
         this whole change set exists to object to."""
-        step5 = _sections(COMMAND.read_text(encoding="utf-8")).get("Job Ranking - YYYY-MM-DD", "")
+        step5 = _sections(COMMAND.read_text(encoding="utf-8")).get(
+            "Job Ranking - YYYY-MM-DD", ""
+        )
         self.assertIn(
             "Swept",
             step5,
@@ -416,7 +464,11 @@ class RankCommandSpec(unittest.TestCase):
             capture_output=True,
             text=True,
         )
-        self.assertEqual(result.returncode, 0, f"lint_skills.py failed:\n{result.stdout}{result.stderr}")
+        self.assertEqual(
+            result.returncode,
+            0,
+            f"lint_skills.py failed:\n{result.stdout}{result.stderr}",
+        )
 
 
 if __name__ == "__main__":

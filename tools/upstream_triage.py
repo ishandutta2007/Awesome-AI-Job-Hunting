@@ -29,6 +29,7 @@ Usage: python tools/upstream_triage.py [--remote upstream] [--branch master]
 Exits 0 always (a report, not a gate). Prints a note to stderr and exits 0 if
 the upstream ref is unavailable, so a scheduled job degrades gracefully.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -70,9 +71,7 @@ def files_touched(sha: str) -> list[str]:
 
 def path_exists(path: str) -> bool:
     # ls-tree against HEAD is authoritative for "does this fork still ship it".
-    r = subprocess.run(
-        ["git", "cat-file", "-e", f"HEAD:{path}"], capture_output=True
-    )
+    r = subprocess.run(["git", "cat-file", "-e", f"HEAD:{path}"], capture_output=True)
     return r.returncode == 0
 
 
@@ -167,10 +166,14 @@ def main() -> int:
             review.append((short, sha, subj, substantive))
 
     lines: list[str] = []
-    lines.append(f"Upstream `{ref}` has **{len(behind)}** commit(s) this fork lacks: "
-                 f"**{len(review)}** worth reviewing, **{len(skip)}** probably skippable.")
+    lines.append(
+        f"Upstream `{ref}` has **{len(behind)}** commit(s) this fork lacks: "
+        f"**{len(review)}** worth reviewing, **{len(skip)}** probably skippable."
+    )
     lines.append("")
-    lines.append("_This is a triage report. Nothing was merged - review and port by hand._")
+    lines.append(
+        "_This is a triage report. Nothing was merged - review and port by hand._"
+    )
     lines.append("")
 
     lines.append("### Worth reviewing")
@@ -186,7 +189,9 @@ def main() -> int:
         # Ready-to-run cherry-pick lines - still information, not action. The
         # report stops here on purpose; a human runs (and verifies) these.
         lines.append("")
-        lines.append("<details><summary>Ready-to-run cherry-picks (review each before running)</summary>")
+        lines.append(
+            "<details><summary>Ready-to-run cherry-picks (review each before running)</summary>"
+        )
         lines.append("")
         lines.append("```bash")
         for short, sha, subj, _ in review:

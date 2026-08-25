@@ -8,6 +8,7 @@ fallback. Together these keep a ghost-job report diagnosable days after
 the run's scrollback is gone (#331): a stale-index entry, a live-CLI
 entry, and a job with no entry at all each point at a different mechanism.
 """
+
 import unittest
 from pathlib import Path
 

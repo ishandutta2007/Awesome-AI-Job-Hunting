@@ -111,6 +111,8 @@ class SettingsShapeTests(LinterRepoFixture):
                 self.assertEqual(result.returncode, 1)
                 self.assertIn("expected permissions.allow to be a list", result.stdout)
                 self.assertNotIn("Traceback", result.stderr)
+
+
 class SkillAndCommandCheckTests(LinterRepoFixture):
     """check_skill()/check_command() are the linter's main job and were
     previously untested - only check_settings() had coverage, so deleting

@@ -31,14 +31,18 @@ PORTAL_CLIS = sorted((REPO_ROOT / ".agents" / "skills").glob("*-search"))
 # Derived, never copied: a hardcoded field list drifts in lockstep with
 # nothing - if Step 2's prose drops or adds a field, the known-good portals
 # and this pin would keep agreeing forever while the contract changed.
-_CONTRACT_SENTENCE = re.compile(r"Search output already includes ([a-zA-Z0-9\s,]+)\.", re.MULTILINE)
+_CONTRACT_SENTENCE = re.compile(
+    r"Search output already includes ([a-zA-Z0-9\s,]+)\.", re.MULTILINE
+)
 
 
 def derive_contract_fields() -> frozenset[str]:
     text = SCRAPER_SKILL.read_text(encoding="utf-8")
     match = _CONTRACT_SENTENCE.search(text)
     if match is None:
-        raise AssertionError("Step 2 contract sentence not found in job-scraper/SKILL.md")
+        raise AssertionError(
+            "Step 2 contract sentence not found in job-scraper/SKILL.md"
+        )
     fields_text = re.sub(r"\s+and\s+", ",", match.group(1))
     fields = {f.strip().lower() for f in fields_text.split(",") if f.strip()}
     return frozenset(fields)
@@ -67,7 +71,9 @@ class ScrapeSearchOutputContractTests(unittest.TestCase):
                 failures.append(f"{portal.name}: no cli/src/commands/search.ts")
                 continue
             source = search_output_source(search_ts)
-            emitted = set(re.findall(r"^\s*([a-zA-Z_][a-zA-Z0-9_]*):", source, re.MULTILINE))
+            emitted = set(
+                re.findall(r"^\s*([a-zA-Z_][a-zA-Z0-9_]*):", source, re.MULTILINE)
+            )
             missing = sorted(contract - emitted)
             if missing:
                 failures.append(f"{portal.name}: missing {missing} in search output")

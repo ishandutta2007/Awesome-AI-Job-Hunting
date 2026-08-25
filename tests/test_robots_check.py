@@ -23,7 +23,9 @@ from robots_check import allowed, is_robots_body  # noqa: E402
 # Real body served by privatebank.barclays.com: blank lines sit between the
 # User-agent line and its rules. Python's robotparser treats those as record
 # separators and drops every rule, so /cs/ reads as allowed.
-BARCLAYS = "User-agent: *\n\n\nAllow: /\n\nDisallow: /cs/\n\nSitemap: https://x/sitemap.xml\n"
+BARCLAYS = (
+    "User-agent: *\n\n\nAllow: /\n\nDisallow: /cs/\n\nSitemap: https://x/sitemap.xml\n"
+)
 
 # jobup.ch: the case a community fork was asked to ship opt-in.
 JOBUP = "User-agent: *\nDisallow: /api/\n"
@@ -201,15 +203,18 @@ class TestPercentEncodedRules(unittest.TestCase):
     """
 
     def test_encoded_space_in_disallow_now_matches(self):
-        self.assertFalse(allowed("User-agent: *\nDisallow: /foo%20bar\n", "*", "/foo bar"))
+        self.assertFalse(
+            allowed("User-agent: *\nDisallow: /foo%20bar\n", "*", "/foo bar")
+        )
 
     def test_encoded_rule_does_not_overmatch(self):
-        self.assertTrue(allowed("User-agent: *\nDisallow: /foo%20bar\n", "*", "/foobar"))
+        self.assertTrue(
+            allowed("User-agent: *\nDisallow: /foo%20bar\n", "*", "/foobar")
+        )
 
     def test_plain_rules_are_unaffected(self):
         self.assertFalse(allowed(JOBUP, "*", "/api/x"))
         self.assertTrue(allowed(JOBUP, "*", "/en/jobs/x"))
-
 
 
 class TestArgumentHardening(unittest.TestCase):
@@ -257,7 +262,6 @@ class TestArgumentHardening(unittest.TestCase):
         finally:
             robots_check._fetch = original
         self.assertEqual(seen[0], "https://x.example/robots.txt")
-
 
 
 if __name__ == "__main__":

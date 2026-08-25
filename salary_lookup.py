@@ -29,17 +29,32 @@ DATA_FILE = Path(__file__).parent / "salary_data.json"
 
 # Common Danish <-> anglicized spelling variants
 SPELLING_VARIANTS = {
-    "ø": "o", "æ": "ae", "å": "aa",
-    "ö": "o", "ä": "ae", "ü": "u",
+    "ø": "o",
+    "æ": "ae",
+    "å": "aa",
+    "ö": "o",
+    "ä": "ae",
+    "ü": "u",
 }
 
 # Legal suffixes and noise to strip when matching company names
 STRIP_PATTERNS = [
-    r"\ba/s\b", r"\baps\b", r"\bi/s\b", r"\bp/s\b", r"\bk/s\b",
-    r"\bivs\b", r"\bamba\b", r"\ba\.m\.b\.a\.?\b",
-    r"\(vg\)", r"\(.*?\)",  # (VG) and other parentheticals
-    r"\bdanmark\b", r"\bdenmark\b", r"\bscandinavia\b", r"\bnordic\b",
-    r"\bgroup\b", r"\bholding\b",
+    r"\ba/s\b",
+    r"\baps\b",
+    r"\bi/s\b",
+    r"\bp/s\b",
+    r"\bk/s\b",
+    r"\bivs\b",
+    r"\bamba\b",
+    r"\ba\.m\.b\.a\.?\b",
+    r"\(vg\)",
+    r"\(.*?\)",  # (VG) and other parentheticals
+    r"\bdanmark\b",
+    r"\bdenmark\b",
+    r"\bscandinavia\b",
+    r"\bnordic\b",
+    r"\bgroup\b",
+    r"\bholding\b",
     r",\s*.*$",  # everything after comma (sub-entities)
 ]
 
@@ -101,7 +116,9 @@ def collect_validation_issues(data):
 
         categories = entry.get("categories", {})
         if categories is not None and not isinstance(categories, dict):
-            errors.append(f"companies[{index}].categories must be an object when provided")
+            errors.append(
+                f"companies[{index}].categories must be an object when provided"
+            )
         elif categories:
             for cat_label, cat_data in categories.items():
                 if not isinstance(cat_data, dict):
@@ -117,7 +134,9 @@ def collect_validation_issues(data):
                         f"number (got {type(count).__name__})"
                     )
                 index_val = cat_data.get("index")
-                if index_val is not None and not isinstance(index_val, (int, float, str)):
+                if index_val is not None and not isinstance(
+                    index_val, (int, float, str)
+                ):
                     errors.append(
                         f"companies[{index}].categories.{cat_label}.index must be a "
                         f"number or string (got {type(index_val).__name__})"
@@ -144,7 +163,9 @@ def read_raw_data():
         print("Error: salary_data.json not found.", file=sys.stderr)
         print("", file=sys.stderr)
         print("This tool requires a salary data file.", file=sys.stderr)
-        print("See tools/README_SALARY_TOOL.md for setup instructions.", file=sys.stderr)
+        print(
+            "See tools/README_SALARY_TOOL.md for setup instructions.", file=sys.stderr
+        )
         print("", file=sys.stderr)
         print("If you don't have salary data, the salary lookup", file=sys.stderr)
         print("step will be skipped during /apply.", file=sys.stderr)
@@ -153,7 +174,9 @@ def read_raw_data():
         with open(DATA_FILE, "r", encoding="utf-8") as f:
             data = json.load(f)
     except json.JSONDecodeError as exc:
-        fail_data_error(f"invalid JSON at line {exc.lineno}, column {exc.colno}: {exc.msg}")
+        fail_data_error(
+            f"invalid JSON at line {exc.lineno}, column {exc.colno}: {exc.msg}"
+        )
     return data
 
 
@@ -188,7 +211,9 @@ def extract_core_words(s):
     return [w for w in words if len(w) > 1]
 
 
-def match_score_optimized(q_norm, q_ang, q_words_set, q_words_ang_set, query, entry_name):
+def match_score_optimized(
+    q_norm, q_ang, q_words_set, q_words_ang_set, query, entry_name
+):
     """Compute a match score between 0 and 100 using precalculated query values."""
     n_norm = normalize(entry_name)
 
@@ -240,7 +265,9 @@ def match_score_optimized(q_norm, q_ang, q_words_set, q_words_ang_set, query, en
     if overlap:
         if len(q_words_set) == 1:
             q_word = list(q_words_set)[0]
-            if q_word in n_words or anglicize(q_word) in {anglicize(w) for w in n_words}:
+            if q_word in n_words or anglicize(q_word) in {
+                anglicize(w) for w in n_words
+            }:
                 return 70
             else:
                 return 0
@@ -258,7 +285,9 @@ def match_score(query, entry_name):
     q_words = extract_core_words(query)
     q_words_set = set(q_words)
     q_words_ang_set = {anglicize(w) for w in q_words}
-    return match_score_optimized(q_norm, q_ang, q_words_set, q_words_ang_set, query, entry_name)
+    return match_score_optimized(
+        q_norm, q_ang, q_words_set, q_words_ang_set, query, entry_name
+    )
 
 
 def search_company(data, query, city=None):
@@ -277,10 +306,14 @@ def search_company(data, query, city=None):
         if city:
             city_lower = city.lower()
             entry_city = (entry.get("city") or "").lower()
-            if city_lower not in entry_city and anglicize(city_lower) not in anglicize(entry_city):
+            if city_lower not in entry_city and anglicize(city_lower) not in anglicize(
+                entry_city
+            ):
                 continue
 
-        score = match_score_optimized(q_norm, q_ang, q_words_set, q_words_ang_set, query, entry["company"])
+        score = match_score_optimized(
+            q_norm, q_ang, q_words_set, q_words_ang_set, query, entry["company"]
+        )
         if score > 0:
             scored.append((score, entry))
 
@@ -293,11 +326,11 @@ def search_company(data, query, city=None):
 def format_entry(entry, metadata):
     """Format a single company entry for display."""
     lines = []
-    lines.append(f"\n{'='*60}")
+    lines.append(f"\n{'=' * 60}")
     lines.append(f"  {entry['company']}")
     if entry.get("city"):
         lines.append(f"  Location: {entry['city']}")
-    lines.append(f"{'='*60}")
+    lines.append(f"{'=' * 60}")
 
     # Get category data (everything except company/city fields)
     categories = entry.get("categories", {})
@@ -312,8 +345,10 @@ def format_entry(entry, metadata):
         index_label = metadata.get("index_label", "Index")
         baseline = metadata.get("index_baseline", 100)
 
-        lines.append(f"  {'Category':<22} {'Count':>6} {index_label:>8}  {'vs Baseline':>10}")
-        lines.append(f"  {'-'*50}")
+        lines.append(
+            f"  {'Category':<22} {'Count':>6} {index_label:>8}  {'vs Baseline':>10}"
+        )
+        lines.append(f"  {'-' * 50}")
 
         for label, data in categories.items():
             display_label = label.replace("_", " ").title()
@@ -335,7 +370,9 @@ def format_entry(entry, metadata):
                 else:
                     index_str = "N/A*"
                     diff_str = ""
-                lines.append(f"  {display_label:<22} {count_str:>6} {index_str:>8}  {diff_str:>10}")
+                lines.append(
+                    f"  {display_label:<22} {count_str:>6} {index_str:>8}  {diff_str:>10}"
+                )
 
         lines.append(f"\n  * N/A = Too few employees to publish (privacy)")
         if metadata.get("baseline_description"):
@@ -369,8 +406,10 @@ def print_validation_report(errors, warnings):
             print(f"    [{i}] {msg}")
     if errors:
         print("")
-        print("Fix the errors above, then re-run. See tools/README_SALARY_TOOL.md "
-              "for the expected format.")
+        print(
+            "Fix the errors above, then re-run. See tools/README_SALARY_TOOL.md "
+            "for the expected format."
+        )
         return 1
     return 0
 
@@ -381,8 +420,11 @@ def main():
     parser.add_argument("--city", help="Filter by city name")
     parser.add_argument("--json", action="store_true", help="Output as JSON")
     parser.add_argument("--list-all", action="store_true", help="List all companies")
-    parser.add_argument("--validate", action="store_true",
-                        help="Validate salary_data.json and print a report, then exit")
+    parser.add_argument(
+        "--validate",
+        action="store_true",
+        help="Validate salary_data.json and print a report, then exit",
+    )
     args = parser.parse_args()
 
     if args.validate:

@@ -3,6 +3,7 @@
 A broken header image on the repo landing page is a silent, high-visibility
 failure; this guard turns it into a red CI run instead.
 """
+
 import re
 import unittest
 from pathlib import Path
@@ -27,7 +28,9 @@ class ReadmeImageReferences(unittest.TestCase):
     def test_all_local_image_references_resolve(self):
         for ref in self._local_refs():
             with self.subTest(ref=ref):
-                self.assertTrue((REPO / ref).is_file(), f"README references missing file: {ref}")
+                self.assertTrue(
+                    (REPO / ref).is_file(), f"README references missing file: {ref}"
+                )
 
 
 if __name__ == "__main__":

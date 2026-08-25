@@ -42,7 +42,16 @@ except ImportError:
 COMPANY_PATTERNS = {"firma", "company", "virksomhed", "employer", "arbejdsgiver"}
 CITY_PATTERNS = {"by", "city", "kommune", "location", "lokation", "sted"}
 COUNT_PATTERNS = {"antal", "count", "number", "n", "employees", "medarbejdere"}
-INDEX_PATTERNS = {"indeks", "index", "idx", "salary", "løn", "median", "average", "gennemsnit"}
+INDEX_PATTERNS = {
+    "indeks",
+    "index",
+    "idx",
+    "salary",
+    "løn",
+    "median",
+    "average",
+    "gennemsnit",
+}
 # "Compound" tokens: pattern words allowed to match as a substring of a larger
 # header token, for languages that glue words together (e.g. Danish "lønindeks"
 # -> løn + indeks). Languages that write headers as separate words need none.
@@ -130,7 +139,9 @@ def parse_sheet(ws, sheet_label=None):
     """Parse a single worksheet into a list of company entries and detected categories."""
     # Find header row
     header_row = None
-    for row_idx, row in enumerate(ws.iter_rows(min_row=1, max_row=10, values_only=False), start=1):
+    for row_idx, row in enumerate(
+        ws.iter_rows(min_row=1, max_row=10, values_only=False), start=1
+    ):
         for cell in row:
             if cell.value and header_matches(str(cell.value), COMPANY_PATTERNS):
                 header_row = row_idx
@@ -139,7 +150,10 @@ def parse_sheet(ws, sheet_label=None):
             break
 
     if header_row is None:
-        print(f"Warning: Could not find header row in sheet '{ws.title}'. Skipping.", file=sys.stderr)
+        print(
+            f"Warning: Could not find header row in sheet '{ws.title}'. Skipping.",
+            file=sys.stderr,
+        )
         return []
 
     # Read headers
@@ -157,7 +171,10 @@ def parse_sheet(ws, sheet_label=None):
             city_col = i
 
     if company_col is None:
-        print(f"Warning: Could not find company column in sheet '{ws.title}'.", file=sys.stderr)
+        print(
+            f"Warning: Could not find company column in sheet '{ws.title}'.",
+            file=sys.stderr,
+        )
         return []
 
     # Identify data columns (everything that's not company/city or an identifier)
@@ -196,11 +213,13 @@ def parse_sheet(ws, sheet_label=None):
                 continue
             if c_cat and i_cat and c_cat == i_cat:
                 cat_name = c_cat.replace(" ", "_").replace("-", "_")
-                categories.append({
-                    "name": cat_name,
-                    "count_col": c_idx,
-                    "index_col": i_idx,
-                })
+                categories.append(
+                    {
+                        "name": cat_name,
+                        "count_col": c_idx,
+                        "index_col": i_idx,
+                    }
+                )
                 used_counts.add(ci)
                 used_indexes.add(ii)
                 break
@@ -211,17 +230,25 @@ def parse_sheet(ws, sheet_label=None):
     for ci, (c_idx, c_header, _) in enumerate(count_cols):
         if ci not in used_counts:
             categories.append(
-                {"name": c_header.lower().replace(" ", "_"), "value_col": c_idx, "field": "count"}
+                {
+                    "name": c_header.lower().replace(" ", "_"),
+                    "value_col": c_idx,
+                    "field": "count",
+                }
             )
 
     # Remaining unmatched index columns become standalone (use original header)
     for ii, (i_idx, i_header, _) in enumerate(index_cols):
         if ii not in used_indexes:
-            categories.append({"name": i_header.lower().replace(" ", "_"), "value_col": i_idx})
+            categories.append(
+                {"name": i_header.lower().replace(" ", "_"), "value_col": i_idx}
+            )
 
     # Untyped columns become standalone
     for col_idx, col_header in untyped_cols:
-        categories.append({"name": col_header.lower().replace(" ", "_"), "value_col": col_idx})
+        categories.append(
+            {"name": col_header.lower().replace(" ", "_"), "value_col": col_idx}
+        )
 
     # Parse data rows
     companies = []
@@ -271,7 +298,9 @@ def parse_sheet(ws, sheet_label=None):
                         # column) is not salary data; skip it for this row.
                         continue
                     field = cat.get("field", "index")
-                    entry["categories"][cat_name] = {field: int(val) if field == "count" else val}
+                    entry["categories"][cat_name] = {
+                        field: int(val) if field == "count" else val
+                    }
 
         companies.append(entry)
 
@@ -279,24 +308,27 @@ def parse_sheet(ws, sheet_label=None):
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Convert salary Excel data to JSON"
-    )
+    parser = argparse.ArgumentParser(description="Convert salary Excel data to JSON")
     parser.add_argument("excel_file", help="Path to the Excel file with salary data")
     parser.add_argument(
-        "--output", default=None,
+        "--output",
+        default=None,
         help="Output JSON file path (default: salary_data.json in repo root)",
     )
     parser.add_argument(
-        "--source", default=None,
+        "--source",
+        default=None,
         help="Name of the data source (e.g., 'Union Statistics 2025')",
     )
     parser.add_argument(
-        "--baseline", type=float, default=100,
+        "--baseline",
+        type=float,
+        default=100,
         help="Baseline value for index comparison (default: 100)",
     )
     parser.add_argument(
-        "--baseline-desc", default=None,
+        "--baseline-desc",
+        default=None,
         help="Description of what the baseline means (e.g., 'Index 100 = median salary')",
     )
     args = parser.parse_args()
@@ -307,10 +339,17 @@ def main():
         sys.exit(1)
 
     if openpyxl is None:
-        print("Error: openpyxl is required. Install it with: pip install openpyxl", file=sys.stderr)
+        print(
+            "Error: openpyxl is required. Install it with: pip install openpyxl",
+            file=sys.stderr,
+        )
         sys.exit(1)
 
-    output_path = Path(args.output) if args.output else Path(__file__).parent.parent / "salary_data.json"
+    output_path = (
+        Path(args.output)
+        if args.output
+        else Path(__file__).parent.parent / "salary_data.json"
+    )
 
     print(f"Reading: {excel_path}")
     wb = openpyxl.load_workbook(excel_path, read_only=True, data_only=True)
@@ -326,7 +365,10 @@ def main():
 
     if not all_companies:
         print("Error: No data could be parsed from the Excel file.", file=sys.stderr)
-        print("Make sure the Excel file has a header row with a 'Company'/'Firma' column.", file=sys.stderr)
+        print(
+            "Make sure the Excel file has a header row with a 'Company'/'Firma' column.",
+            file=sys.stderr,
+        )
         sys.exit(1)
 
     # Build output
@@ -335,7 +377,8 @@ def main():
             "source": args.source or excel_path.stem,
             "index_baseline": args.baseline,
             "index_label": "Index",
-            "baseline_description": args.baseline_desc or f"Index {args.baseline} = baseline",
+            "baseline_description": args.baseline_desc
+            or f"Index {args.baseline} = baseline",
         },
         "companies": all_companies,
     }

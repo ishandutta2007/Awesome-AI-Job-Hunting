@@ -6,6 +6,7 @@ lint_skills.py enforces, and aggregate mode's merge of tracker rows with
 /rank's recorded gaps from seen_jobs.json (previously aggregate mode only
 read the tracker and inferred skills from free-text columns).
 """
+
 import subprocess
 import sys
 import unittest
@@ -13,6 +14,7 @@ from pathlib import Path
 
 try:
     import yaml  # noqa: F401 - only probing availability for the lint integration test
+
     _HAVE_YAML = True
 except ImportError:
     _HAVE_YAML = False
@@ -39,7 +41,9 @@ class UpskillSkillSpec(unittest.TestCase):
     def test_skill_file_exists_with_lint_compliant_header(self):
         self.assertTrue(SKILL.is_file(), "skill spec missing")
         text = SKILL.read_text(encoding="utf-8")
-        self.assertTrue(text.startswith("---\n"), "skill spec must start with YAML frontmatter")
+        self.assertTrue(
+            text.startswith("---\n"), "skill spec must start with YAML frontmatter"
+        )
         self.assertIn("name: upskill", text)
 
     def test_step2_reads_ranked_jobs_with_moderate_fit_floor(self):
@@ -68,7 +72,11 @@ class UpskillSkillSpec(unittest.TestCase):
     def test_step3_documents_dedupe_and_gap_precedence(self):
         sections = _sections(SKILL.read_text(encoding="utf-8"))
         step3 = sections.get("Step 3: Pass 1 — Hard Skill Diff", "")
-        self.assertIn("case-insensitive company + role", step3, "Step 3 must specify the dedupe key")
+        self.assertIn(
+            "case-insensitive company + role",
+            step3,
+            "Step 3 must specify the dedupe key",
+        )
         self.assertIn(
             "/notion-sync",
             step3,
@@ -138,7 +146,11 @@ class UpskillSkillSpec(unittest.TestCase):
             capture_output=True,
             text=True,
         )
-        self.assertEqual(result.returncode, 0, f"lint_skills.py failed:\n{result.stdout}{result.stderr}")
+        self.assertEqual(
+            result.returncode,
+            0,
+            f"lint_skills.py failed:\n{result.stdout}{result.stderr}",
+        )
 
 
 if __name__ == "__main__":

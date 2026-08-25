@@ -35,7 +35,9 @@ def rel(path: Path) -> str:
 def check_skill(path: Path) -> None:
     text = path.read_text(encoding="utf-8")
     if not text.startswith("---\n"):
-        errors.append(f"{rel(path)}: missing YAML frontmatter (file must start with ---)")
+        errors.append(
+            f"{rel(path)}: missing YAML frontmatter (file must start with ---)"
+        )
         return
     end = text.find("\n---", 4)
     if end == -1:
@@ -62,19 +64,27 @@ def check_skill(path: Path) -> None:
             # Targets may contain globs (e.g. .agents/skills/*/cli/src/cli.ts);
             # require at least one existing file to match.
             if "*" in target:
-                if not list(ROOT.glob(target)) and not list((ROOT / ".agents").glob(target)):
-                    errors.append(f"{rel(path)}: allowed-tools glob matches no files: {target}")
+                if not list(ROOT.glob(target)) and not list(
+                    (ROOT / ".agents").glob(target)
+                ):
+                    errors.append(
+                        f"{rel(path)}: allowed-tools glob matches no files: {target}"
+                    )
             else:
                 candidates = [ROOT / target, ROOT / ".agents" / target]
                 if not any(c.is_file() for c in candidates):
-                    errors.append(f"{rel(path)}: allowed-tools references a missing file: {target}")
+                    errors.append(
+                        f"{rel(path)}: allowed-tools references a missing file: {target}"
+                    )
 
 
 def check_command(path: Path) -> None:
     lines = path.read_text(encoding="utf-8").lstrip().splitlines()
     first = lines[0] if lines else ""
     if not first.startswith("# /"):
-        errors.append(f"{rel(path)}: command file must start with a '# /<name>' title (found: {first[:50]!r})")
+        errors.append(
+            f"{rel(path)}: command file must start with a '# /<name>' title (found: {first[:50]!r})"
+        )
 
 
 def check_settings() -> None:
@@ -85,7 +95,9 @@ def check_settings() -> None:
         errors.append(f".claude/settings.json: {exc}")
         return
     if not isinstance(data, dict):
-        errors.append(".claude/settings.json: expected top-level JSON value to be an object")
+        errors.append(
+            ".claude/settings.json: expected top-level JSON value to be an object"
+        )
         return
     permissions = data.get("permissions", {})
     if not isinstance(permissions, dict):
@@ -96,10 +108,14 @@ def check_settings() -> None:
 
 
 def main() -> int:
-    skills = sorted(ROOT.glob(".claude/skills/*/SKILL.md")) + sorted(ROOT.glob(".agents/skills/*/SKILL.md"))
+    skills = sorted(ROOT.glob(".claude/skills/*/SKILL.md")) + sorted(
+        ROOT.glob(".agents/skills/*/SKILL.md")
+    )
     commands = sorted((ROOT / ".claude" / "commands").glob("*.md"))
     if not skills:
-        errors.append("no SKILL.md files found - glob roots are wrong or the tree moved")
+        errors.append(
+            "no SKILL.md files found - glob roots are wrong or the tree moved"
+        )
     if not commands:
         errors.append("no command files found under .claude/commands/")
 
@@ -114,7 +130,9 @@ def main() -> int:
         for err in errors:
             print(f"  - {err}")
         return 1
-    print(f"lint_skills: OK ({len(skills)} skills, {len(commands)} commands, settings.json)")
+    print(
+        f"lint_skills: OK ({len(skills)} skills, {len(commands)} commands, settings.json)"
+    )
     return 0
 
 

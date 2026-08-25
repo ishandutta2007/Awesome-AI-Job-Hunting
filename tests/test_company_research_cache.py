@@ -11,11 +11,14 @@ most likely to be dropped in a future edit, since it is easy to add the read
 half and forget the write half - that fresh research gets written back for
 the next consumer to find.
 """
+
 import unittest
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
-EVALUATION = REPO / ".claude" / "skills" / "job-application-assistant" / "04-job-evaluation.md"
+EVALUATION = (
+    REPO / ".claude" / "skills" / "job-application-assistant" / "04-job-evaluation.md"
+)
 APPLY = REPO / ".claude" / "commands" / "apply.md"
 INTERVIEW = REPO / ".claude" / "commands" / "interview.md"
 
@@ -64,9 +67,13 @@ class TestCacheDefinition(unittest.TestCase):
 
     def test_cache_definition_specifies_location_and_ttl(self):
         body = self.sections.get("Company Research Cache", "")
-        self.assertIn("company_research/", body, "cache section must name the storage directory")
+        self.assertIn(
+            "company_research/", body, "cache section must name the storage directory"
+        )
         self.assertIn("30", body, "cache section must state the TTL (30 days)")
-        self.assertIn("fetched_date", body, "cache section must name the freshness field")
+        self.assertIn(
+            "fetched_date", body, "cache section must name the freshness field"
+        )
 
     def test_cache_definition_preserves_the_verification_rule(self):
         """The cache must not weaken the existing 'verify before quoting' rule -
@@ -100,8 +107,12 @@ class TestCacheDefinition(unittest.TestCase):
 class TestApplyWiring(unittest.TestCase):
     def test_reviewer_prompt_checks_cache_before_researching(self):
         body = _apply_research_step()
-        self.assertNotEqual(body, "", "could not locate apply.md's Research the Company step")
-        self.assertIn("company_research/", body, "reviewer prompt must reference the cache path")
+        self.assertNotEqual(
+            body, "", "could not locate apply.md's Research the Company step"
+        )
+        self.assertIn(
+            "company_research/", body, "reviewer prompt must reference the cache path"
+        )
         self.assertRegex(
             body,
             r"[Cc]heck the cache",
