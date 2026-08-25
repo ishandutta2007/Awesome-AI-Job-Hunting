@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/mascot/pip_flight_loop.gif" alt="Pip, the courier bird" width="200">
+  <img src="assets/mascot/ai_job_mascot.jpg" alt="AI-Job-Hunting Mascot - Dynamic Cyber Courier" width="280">
 </p>
 
 # 🚀 Awesome AI-Job-Hunting 🎯
