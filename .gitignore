@@ -1,7 +1,63 @@
+# AI-Job-Hunting Workspace .gitignore
+
+# Python & Environment
 *.bak
 *.bk
 *.env
+.env
+.env.*
 .cache
 __pycache__/
-contributors.txt
+*.pyc
+*.pyo
+*.pyd
+
+# Dependencies & Build Artefacts
+node_modules/
+dist/
+build/
 temp_repo_clone
+contributors.txt
+
+# OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# LaTeX Auxiliary Build Files
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+
+# AI-Job-Hunting Sensitive Personal Data & Generated Files
+salary_data.json
+**/job_scraper/seen_jobs.json
+**/job_scraper/notion_sync.json
+**/job_scraper/*.md
+*_BehavioralReport.pdf
+linkedin_Profile.pdf
+cv/main_*.*
+!cv/main_example.tex
+cv/*.txt
+cover_letters/cover_*.*
+cover_letters/Cover_*.*
+!cover_letters/cover_example.tex
+!cover_letters/OpenFonts/fonts/**
+documents/cv/**
+documents/linkedin/**
+documents/diplomas/**
+documents/references/**
+documents/applications/**
+documents/postings/**
+documents/interview/**
+!documents/**/.gitkeep
+job_search_tracker.csv
+gmail_sync/
+reports/
+upskill/*.md
+**/upskill/report-*.md
+company_research/*.json
