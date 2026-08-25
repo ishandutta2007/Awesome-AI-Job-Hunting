@@ -2,10 +2,6 @@
   <img src="assets/banner.svg" alt="Awesome AI-Job-Hunting Banner" width="100%">
 </p>
 
-<p align="center">
-  <img src="assets/mascot/ai_job_mascot.jpg" alt="AI-Job-Hunting Mascot - Dynamic Cyber Courier" width="240">
-</p>
-
 # 🚀 Awesome AI-Job-Hunting 🎯
 
 *The Privacy-First, Open-Source Autonomous AI-Job-Hunting & Career Automation Engine.*
