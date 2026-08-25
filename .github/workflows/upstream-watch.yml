@@ -39,7 +39,7 @@ jobs:
     name: Triage upstream commits
     # No-op on the upstream template itself. Pinned by
     # tests/test_upstream_triage.py so a template clone never runs it by surprise.
-    if: github.repository != 'MadsLorentzen/ai-job-search'
+    if: github.repository != 'ishandutta2007/Awesome-AI-Job-Hunting'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -51,7 +51,7 @@ jobs:
 
       - name: Fetch upstream template
         run: |
-          git remote add upstream https://github.com/MadsLorentzen/ai-job-search.git 2>/dev/null || true
+          git remote add upstream https://github.com/ishandutta2007/Awesome-AI-Job-Hunting.git 2>/dev/null || true
           git fetch --quiet upstream master
 
       - name: Build triage report

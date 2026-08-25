@@ -9,7 +9,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SCRIPT = REPO_ROOT / "tools" / "check_upstream_updates.py"
 
-TEMPLATE_URL = "https://github.com/MadsLorentzen/ai-job-search.git"
+TEMPLATE_URL = "https://github.com/ishandutta2007/Awesome-AI-Job-Hunting.git"
 FORK_URL = "https://github.com/octocat/ai-job-search.git"
 
 FRAMEWORK_FILES = [
@@ -101,7 +101,7 @@ class DirectCloneFallbackTests(UpstreamCheckerRepoFixture):
 
     def test_clone_with_lowercased_template_url_falls_back_without_fork_warning(self):
         # GitHub serves repo paths case-insensitively, so a clone from
-        # https://github.com/madslorentzen/ai-job-search is still the template.
+        # https://github.com/ishandutta2007/Awesome-AI-Job-Hunting is still the template.
         subprocess.run(
             ["git", "remote", "set-url", "origin", TEMPLATE_URL.lower()],
             cwd=self.root,

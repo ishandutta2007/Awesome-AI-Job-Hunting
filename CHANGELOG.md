@@ -815,7 +815,7 @@ per-file diff commands.
   Step 5 and then discarded. Both arrays are now stored verbatim and replaced (never
   accumulated) on `--all` re-ranks, so downstream consumers of `seen_jobs.json` can read
   real triage findings instead of re-deriving them. See
-  [discussion #258](https://github.com/MadsLorentzen/ai-job-search/discussions/258).
+  [discussion #258](https://github.com/ishandutta2007/Awesome-AI-Job-Hunting/discussions/258).
 - **`/upskill` aggregate mode now ingests `/rank`'s recorded gaps** - previously it only
   read `job_search_tracker.csv` and *guessed* required skills from the `role`/`sector`/
   `notes` columns, even though `/rank` had already fetched and scored postings that never
@@ -825,7 +825,7 @@ per-file diff commands.
   skill list wherever both exist. The heatmap's Gap Source column now shows the
   recorded-vs-inferred split per skill, and the report header states how many jobs came
   from each source. Depends on #263 (`/rank` persisting `gaps`/`strengths`); see
-  [discussion #258](https://github.com/MadsLorentzen/ai-job-search/discussions/258).
+  [discussion #258](https://github.com/ishandutta2007/Awesome-AI-Job-Hunting/discussions/258).
 
 ### Security & privacy
 
@@ -835,7 +835,7 @@ per-file diff commands.
   documents the safe alternative (a private repository with this repo as `upstream`), and
   `/setup` ends with a matching privacy note the moment profile data first lands in
   tracked files. Prompted by
-  [discussion #266](https://github.com/MadsLorentzen/ai-job-search/discussions/266).
+  [discussion #266](https://github.com/ishandutta2007/Awesome-AI-Job-Hunting/discussions/266).
 - **The gitignore guard now covers two more personal-data rules** - `security_guards.py`
   requires `cover_letters/Cover_*.*` (the uppercase cover-letter naming variant `/apply`
   recognizes) and `cv/*.txt` (ATS text extractions of tailored CVs) in `.gitignore`, so a
@@ -862,7 +862,7 @@ per-file diff commands.
 - CONTRIBUTING's "run what CI runs" list is now complete - it previously omitted
   `tools/security_guards.py` and the exact `unittest` invocation, the precise checks a
   contributor PR had already failed on. Prompted by
-  [issue #262](https://github.com/MadsLorentzen/ai-job-search/issues/262).
+  [issue #262](https://github.com/ishandutta2007/Awesome-AI-Job-Hunting/issues/262).
 
 ## [1.1.0] - 2026-07-30
 
@@ -953,11 +953,11 @@ At this baseline the framework provides:
 - **Cross-runtime support** - a root `AGENTS.md` pointer so Codex and Antigravity can
   discover the portable portal skills, with Claude Code as the reference runtime.
 
-[Unreleased]: https://github.com/MadsLorentzen/ai-job-search/compare/v1.6.0...HEAD
-[1.6.0]: https://github.com/MadsLorentzen/ai-job-search/compare/v1.5.0...v1.6.0
-[1.5.0]: https://github.com/MadsLorentzen/ai-job-search/compare/v1.4.0...v1.5.0
-[1.4.0]: https://github.com/MadsLorentzen/ai-job-search/compare/v1.3.0...v1.4.0
-[1.3.0]: https://github.com/MadsLorentzen/ai-job-search/compare/v1.2.0...v1.3.0
-[1.2.0]: https://github.com/MadsLorentzen/ai-job-search/compare/v1.1.0...v1.2.0
-[1.1.0]: https://github.com/MadsLorentzen/ai-job-search/compare/v1.0.0...v1.1.0
-[1.0.0]: https://github.com/MadsLorentzen/ai-job-search/releases/tag/v1.0.0
+[Unreleased]: https://github.com/ishandutta2007/Awesome-AI-Job-Hunting/compare/v1.6.0...HEAD
+[1.6.0]: https://github.com/ishandutta2007/Awesome-AI-Job-Hunting/compare/v1.5.0...v1.6.0
+[1.5.0]: https://github.com/ishandutta2007/Awesome-AI-Job-Hunting/compare/v1.4.0...v1.5.0
+[1.4.0]: https://github.com/ishandutta2007/Awesome-AI-Job-Hunting/compare/v1.3.0...v1.4.0
+[1.3.0]: https://github.com/ishandutta2007/Awesome-AI-Job-Hunting/compare/v1.2.0...v1.3.0
+[1.2.0]: https://github.com/ishandutta2007/Awesome-AI-Job-Hunting/compare/v1.1.0...v1.2.0
+[1.1.0]: https://github.com/ishandutta2007/Awesome-AI-Job-Hunting/compare/v1.0.0...v1.1.0
+[1.0.0]: https://github.com/ishandutta2007/Awesome-AI-Job-Hunting/releases/tag/v1.0.0

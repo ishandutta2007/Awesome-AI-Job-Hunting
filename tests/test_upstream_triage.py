@@ -9,7 +9,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SCRIPT = REPO_ROOT / "tools" / "upstream_triage.py"
 WORKFLOW = REPO_ROOT / ".github" / "workflows" / "upstream-watch.yml"
-UPSTREAM_SLUG = "MadsLorentzen/ai-job-search"
+UPSTREAM_SLUG = "ishandutta2007/Awesome-AI-Job-Hunting"
 
 
 def git(root: Path, *args: str) -> str:

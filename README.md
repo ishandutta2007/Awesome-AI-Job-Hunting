@@ -7,7 +7,7 @@
 *The Privacy-First, Open-Source Autonomous AI-Job-Hunting & Career Automation Engine.*
 
 <p align="center">
-  <a href="https://github.com/MadsLorentzen/ai-job-search/actions/workflows/ci.yml"><img src="https://github.com/MadsLorentzen/ai-job-search/actions/workflows/ci.yml/badge.svg" alt="CI Status"></a>
+  <a href="https://github.com/ishandutta2007/Awesome-AI-Job-Hunting/actions/workflows/ci.yml"><img src="https://github.com/ishandutta2007/Awesome-AI-Job-Hunting/actions/workflows/ci.yml/badge.svg" alt="CI Status"></a>
   <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT">
   <img src="https://img.shields.io/badge/Privacy-100%25%20Local-success.svg" alt="100% Local Privacy">
   <img src="https://img.shields.io/badge/Multi--Agent-Claude%20%7C%20Antigravity%20%7C%20Codex-purple.svg" alt="Multi-Agent Support">
@@ -40,7 +40,7 @@
 
 <p align="center">
   <i>☕ Found this framework valuable? Saved days of manual writing?</i><br>
-  <a href="https://ko-fi.com/madslorentzen">
+  <a href="https://github.com/sponsors/ishandutta2007">
     <img src="https://storage.ko-fi.com/cdn/kofi3.png?v=6" alt="Buy me a coffee at ko-fi.com" height="40">
   </a>
 </p>
@@ -80,7 +80,7 @@
 ### 1. Fork and clone
 
 ```bash
-gh repo fork MadsLorentzen/ai-job-search --clone
+gh repo fork ishandutta2007/Awesome-AI-Job-Hunting --clone
 cd ai-job-search
 ```
 
@@ -242,7 +242,7 @@ The **AI-Job-Hunting** framework follows strict security boundaries to protect s
 We welcome contributions to the universal framework! Please review [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md) before opening a pull request.
 
 - 🌍 **Building for your local market?** Use `/add-portal` to scaffold custom job board skills for your country.
-- 💬 **Join the Discussion:** Share your portal adaptations in the [Community Forks & Adaptations](https://github.com/MadsLorentzen/ai-job-search/discussions/78) hub.
+- 💬 **Join the Discussion:** Share your portal adaptations in the [Community Forks & Adaptations](https://github.com/ishandutta2007/Awesome-AI-Job-Hunting/discussions/78) hub.
 
 ---
 
